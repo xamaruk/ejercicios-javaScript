@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ejercicio 08 Booleanos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&display=swap"
+    rel="stylesheet" />
+  <style>
+    .contenedor {
+      counter-reset: titulos;
+      font-family: "Titillium Web", serif;
+      font-weight: 300;
+      font-style: normal;
+    }
+
+    .pregunta {
+      border: 1px solid grey;
+      padding: 1rem;
+      margin: 2rem;
+      border-radius: 1rem;
+    }
+
+    h2::before {
+      counter-increment: titulos;
+      content: "Caso " counter(titulos) " - ";
+    }
+
+    .visor {
+      background-color: lightgray;
+      color: white;
+      margin: 2rem;
+      padding: 2rem;
+      font-size: 1.5rem;
+      font-weight: 500;
+      font-style: italic;
+    }
+
+    .visor button,
+    .visor select {
+      font-size: 1.5rem;
+      padding: 0.2rem .8rem;
+      font-family: 'Titillium web';
+      font-weight: 600;
+      color: darkblue;
+      background-color: white;
+      border: none;
+      border-radius: .3rem;
+      display: inline-block;
+      margin-bottom: 2rem;
+    }
+
+    #monitor {
+      display: flex;
+      position: fixed;
+      right: -20%;
+      top: 0;
+      width: 20%;
+      height: 100%;
+      padding: 1rem;
+      background-color: white;
+      border: 2px solid darkblue;
+      border-radius: 1rem;
+      overflow: auto;
+      flex-wrap: wrap;
+      gap: 1rem;
+      transition: all 1s;
+    }
+
+    /*propio*/
+
+    #ventana_modo {
+      width: 90%;
+      height: 300px;
+      margin: 2rem auto;
+      padding: 1rem;
+    }
+
+    .modo-claro {
+      background-color: wheat;
+      color: chocolate;
+    }
+
+    .modo-oscuro {
+      background-color: black;
+      color: lightblue;
+      border: 2px solid;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="contenedor">
+    <h1>Ejemplo de Uso de valores Booleanos</h1>
+
+    <article class="pregunta">
+      <h2>Cambiar modo pantalla</h2>
+      <p>
+        Vamos a hacer una funcionalidad sencilla para un botón, que nos permita intercambiar entre modo claro y oscuro
+        de
+        la pantalla, aplicado sobre un contenedor. Hazlo teniendo en cuenta que debes crear 3 funciones, una que aplique
+        las características de modo claro al documento (textos, colores y resto de formato), otra para aplicar el modo
+        oscuro, y una tercera aplicada sobre el botón que permita cambiar entre los 2 modos.
+      </p>
+      <div class="visor">
+        <button id="btn_modo">Modo oscuro</button>
+        <div id="ventana_modo" class="modo-claro">
+          <h3 id="titulo_modo">Estamos usando el modo luminoso</h3>
+        </div>
+      </div>
+    </article>
+    <article class="pregunta">
+      <h2>Usando elementos de formulario</h2>
+      <p>Al activar el primer checkbox aparecera un elemento select con 4 valores de descuento (10%, 15%, 20%, 30%),y
+        aparecerá un nuevo checkbox, y si activamos el segundo esos valores se aumentan un 5% cada uno.</p>
+      <div class="visor">
+        <div class="fila">
+          <input type="checkbox" name="ck_dto" id="ck_dto">
+          <label for="ck_dto">Selecciona descuento de usuario</label>
+        </div>
+        <div class="fila" id="block_dto" style="display: none;">
+          <div class="fila">
+            <input type="checkbox" name="ck_pro" id="ck_pro">
+            <label for="ck_pro">Usuario premium</label>
+          </div>
+          <select name="dpl_dto" id="dpl_dto">
+            <option value="10%">Alevín</option>
+            <option value="15%">Cadete</option>
+            <option value="20%">Infantil</option>
+            <option value="25%">Juvenil</option>
+          </select>
+          <label for="out_dto">Descuento Aplicado</label>
+          <input type="text" id="out_dto" readonly>
+        </div>
+      </div>
+    </article>
+
+  </div>
+  <script>
+    let modo_claro = true;
+    const BOTON = document.getElementById('btn_modo');
+    const TITULO = document.getElementById('titulo_modo');
+    const VENTANA = document.getElementById('ventana_modo');
+    function controlModo() {
+      if (modo_claro) {
+        modoOscuro();
+        modo_claro = false;
+      } else {
+        modoClaro();
+        //en lugar de cambiar modo_claro aquí lo hacemos en la función, también es válido
+      }
+    }
+    function modoOscuro() {
+      TITULO.textContent = 'Modo Oscuro Activado';
+      VENTANA.className = 'modo-oscuro';
+      BOTON.textContent = 'Modo Claro';
+      BOTON.style.color = 'chocolate';
+      BOTON.style.backgroundColor = 'wheat';
+    }
+    function modoClaro() {
+      TITULO.textContent = 'Modo Claro Activado';
+      VENTANA.className = 'modo-claro';
+      BOTON.textContent = 'Modo Oscuro';
+      BOTON.style.color = 'lightblue';
+      BOTON.style.backgroundColor = 'black';
+      //así también es posible
+      modo_claro = true;
+    }
+    document.getElementById('btn_modo').onclick = controlModo;
+    //CASO 2
+    //variables
+    const CK_USER = document.getElementById('ck_dto');
+    const CK_PREMIUM = document.getElementById('ck_pro');
+    const OUT_DTO = document.getElementById('out_dto');
+    const DPL_DTO = document.getElementById('dpl_dto');
+    //funciones
+    function muestraDto() {
+      //variable booleana que recibe el valor de checkbox
+      const isUser = CK_USER.checked;
+      //bloque a mostrar y ocultar
+      const BL_DTO = document.getElementById('block_dto');
+      if (isUser) {
+        BL_DTO.style.display = 'block';
+        //seleccionamos el primer elemento del listado
+        DPL_DTO[0].selected = true;
+        //llamo a la función que pasa el valor del desplegable al input
+        actualizaDto();
+      } else {
+        //oculto el bloque
+        BL_DTO.style.display = 'none';
+        //desactivamos el checkbox de premium por si estaba marcado
+        CK_PREMIUM.checked = false;
+      }
+    }
+    function hazPremium() {
+      //definir booleano con el checkbox
+      const isPremium = CK_PREMIUM.checked;
+      //asigno valores iniciales a los elementos del listado
+      DPL_DTO[0].value = '10%';
+      DPL_DTO[1].value = '15%';
+      DPL_DTO[2].value = '20%';
+      DPL_DTO[3].value = '25%';
+      //y si es premium entonces los actualizo
+      if (isPremium) {
+        DPL_DTO[0].value = '15%';
+        DPL_DTO[1].value = '20%';
+        DPL_DTO[2].value = '25%';
+        DPL_DTO[3].value = '30%';
+      }
+      actualizaDto()
+    }
+    function actualizaDto() {
+      OUT_DTO.value = DPL_DTO.value;
+    }
+    //eventos
+    CK_USER.onchange = muestraDto;
+    CK_PREMIUM.onchange = hazPremium;
+    DPL_DTO.onchange = actualizaDto;
+    //estado inicial
+    CK_USER.checked = false;
+    CK_PREMIUM.checked = false;
+    DPL_DTO[0].selected = true;
+  </script>
+</body>
+
+</html>

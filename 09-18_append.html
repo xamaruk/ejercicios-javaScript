@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uso de métodos para crear elementos</title>
+    <style>
+        .listado {
+            list-style: none;
+            color: darkblue;
+            font-size: 1.4rem;
+        }
+        #pagina {
+            width: 1200px;
+            min-height: 600px;
+            border: 1px solid gray;
+            box-shadow: 2px 2px 4px gray;
+            margin: 2rem auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="contenedor">
+        <h1>Uso de métodos para crear elementos</h1>
+        <div class="fila">
+            <label for="in_compra">Producto de la lista</label>
+            <input type="text" name="in_compra" id="in_compra">
+            <button id="btn_compra">Añadir</button>
+        </div>
+        <ul id="out_compra"></ul>
+        <h2>Mini editor</h2>
+        <div class="fila">
+            <label for="dpl_elemento">Selecciona elemento</label>
+            <select name="dpl_elemento" id="dpl_elemento">
+                <option value="h2">Título</option>
+                <option value="p">Párrafo</option>
+            </select>
+        </div>
+        <div class="fila">
+            <label for="dpl_color">Selecciona elemento</label>
+            <select name="dpl_color" id="dpl_color">
+                <option value="darkred">Rojo</option>
+                <option value="darkcyan">Azul</option>
+                <option value="darkgreen">Verde</option>
+            </select>
+        </div>
+        <button id="btn_editor">Añadir</button>
+        <div id="pagina"></div>
+    </div>
+    <script>
+        let identificador = 0;
+        function addCompra() {
+            //leer el valor del input
+            let producto = document.querySelector('#in_compra').value;
+            //si el input está vacío no continuamos
+            if (!producto) {
+                return;
+            }
+            //incrementar identificador
+            identificador++;
+            //lo pasamos a un nodo de texto
+            let nd_txt = document.createTextNode(producto);
+            //crear el nodo tipo LI
+            let lista = document.createElement('li');
+            //añadimos el texto al elemento
+            lista.append(nd_txt);
+            //añadir un atributo class
+            lista.setAttribute('class', 'listado otra');
+            //añadir atributo data
+            lista.setAttribute('data-grupo', 'frutas');
+            //el id puede ser definido como propiedad
+            lista.id = 'elemento_' + identificador;
+            //pasar el nodo al DOM
+            document.querySelector('#out_compra').append(lista);
+        }
+        document.querySelector('#btn_compra').onclick = addCompra;
+        function creaTexto() {
+            //recogemos valores de los selects
+            let elemento =  document.querySelector('#dpl_elemento').value;
+            let color =  document.querySelector('#dpl_color').value;
+            //creamos el nodo
+            let nodo = document.createElement(elemento);
+            //le añadimos contenido
+            nodo.textContent = 'Haz clic para editar el elemento';
+            //le damos color
+            nodo.style.color = color;
+            //lo hacemos editable
+            nodo.contentEditable=  true;
+            //pasar a la página
+            document.getElementById('pagina').append(nodo);
+        }
+        document.getElementById('btn_editor').onclick = creaTexto;
+    </script>
+</body>
+</html>

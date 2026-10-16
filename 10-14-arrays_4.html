@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arrays multidimensionales</title>
+    <style>
+        .fila {
+            width: 260px;
+            display: flex;
+            margin: .5rem 0;
+        }
+
+        .fila label {
+            flex-basis: 35%;
+        }
+
+        .error {
+            border-color: red;
+            background-color: rgba(240, 128, 128, 0.37);
+            border-radius: 0.2rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="contenedor">
+        <h1>Gestión de Contactos con más de un campo</h1>
+        <h2>Entrada de datos</h2>
+        <div class="fila">
+            <label for="in_name">Nombre:</label><input type="text" id="in_name">
+        </div>
+        <div class="fila">
+            <label for="in_ciudad">Ciudad:</label><input type="text" id="in_ciudad">
+        </div>
+        <div class="fila">
+            <label for="in_mail">Email:</label><input type="email" id="in_mail">
+        </div>
+        <div class="fila">
+            <label for="in_edad">Edad:</label><input type="number" size="3" id="in_edad">
+        </div>
+        <button id="btn_add">Guardar</button>
+        <h2>Salida de datos</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>nombre</th>
+                    <th>Población</th>
+                    <th>Email</th>
+                    <th>Edad</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody class="contact-list"></tbody>
+        </table>
+        <dialog id="edit_contact">
+            <div class="fila">
+                <label for="ed_name">Nombre:</label><input type="text" id="ed_name">
+            </div>
+            <div class="fila">
+                <label for="ed_ciudad">Ciudad:</label><input type="text" id="ed_ciudad">
+            </div>
+            <div class="fila">
+                <label for="ed_mail">Email:</label><input type="email" id="ed_mail">
+            </div>
+            <div class="fila">
+                <label for="ed_edad">Edad:</label><input type="number" size="3" id="ed_edad">
+            </div>
+            <button id="btn_ed">Aceptar</button>
+        </dialog>
+    </div>
+    <script>
+        const contactos = [['Alumno Prueba', 'Valencia', 'xxx@dominio.com', 25]];
+        let nuevo_contacto = ['Alberto', 'Picanya', 'mimail', 30];
+        contactos.push(nuevo_contacto);
+        //DOM
+        const NAME = document.getElementById('in_name');
+        const TOWN = document.getElementById('in_ciudad');
+        const EMAIL = document.getElementById('in_mail');
+        const AGE = document.getElementById('in_edad');
+        function addContact() {
+            let name = validateInput(NAME, 1);
+            let town = validateInput(TOWN, 1);
+            let email = validateInput(EMAIL, 2);
+            let age = validateInput(AGE, 3);
+            if (!name || !town || !email || !age) {
+                return
+            }
+            let new_contact = [name, town, email, parseInt(age)];
+            contactos.push(new_contact);
+            showContacts();
+            NAME.value = TOWN.value = EMAIL.value = AGE.value = '';
+            NAME.focus();
+        }
+        function validateInput(input, validate) {
+            let value = input.value;
+            let result = false;
+            switch (validate) {
+                case 1:
+                    result = validateText(value)
+                    break;
+                case 2:
+                    result = validateEmail(value)
+                    break;
+                case 3:
+                    result = validateNumber(value)
+                    break;
+
+                default:
+                    result = validateText(value)
+                    break;
+            }
+            if (!result) {
+                setInputError(input);
+                return false;
+            }
+            return result;
+        }
+        function validateText(value) {
+            let text = cleanText(value);
+            return text;
+        }
+        function validateEmail(value) {
+            let email = cleanText(value);
+            if (!email || email.indexOf('@') === -1 || email.indexOf('.') === -1) {
+                return false;
+            }
+            return email;
+        }
+        function validateNumber(value) {
+            let age = parseInt(value);
+            if (age < 1 || age > 120) {
+                return false;
+            }
+            return age;
+        }
+        function cleanText(value) {
+            let text = value.trim();
+            while (text.indexOf('  ') != -1) {
+                text.replaceAll('  ', ' ');
+            }
+            if (text.length < 3) {
+                return false;
+            }
+            return text;
+        }
+        function setInputError(input) {
+            input.classList.add('error');
+            input.value = '';
+        }
+        function clearInputError() {
+            this.classList.remove('error')
+        }
+        function showContacts() {
+            //identificar destino en el DOM
+            const listado = document.querySelector('.contact-list');
+            //eliminamos posibles valores
+            listado.innerHTML = '';
+            //contador de filas
+            let row_count = 0;
+            //bucle para recorrer los contactos
+            for (const contact of contactos) {
+                //creo un elemento tr
+                let row = document.createElement('tr');
+                //recorro cada contacto para pasar sus datos a celdas
+                for (const data of contact) {
+                    //creo la celda
+                    let cell = document.createElement('td');
+                    //paso el dato a la celda
+                    cell.textContent = data;
+                    //paso la celda a la fila
+                    row.append(cell);
+                }
+                //añadir botón edit
+                const btn_ed = document.createElement('button')
+                btn_ed.textContent = 'Editar';
+                btn_ed.onclick = editContact;
+                btn_ed.dataset.row = row_count;
+                let cell = document.createElement('td');
+                //celda para el botón
+                cell.append(btn_ed)
+                row.append(cell)
+                //paso la fila al DOM
+                listado.append(row)
+                //incremento el contador
+                row_count++;
+            }
+        }
+        function editContact() {
+            //busco la fila de datos a editar
+            const index = parseInt(this.dataset.row);
+            //accedo a esa fila
+            const data = contactos[index];
+            //INPUTS
+            const ED_NAME = document.getElementById('ed_name');
+            const ED_TOWN = document.getElementById('ed_ciudad');
+            const ED_MAIL = document.getElementById('ed_mail');
+            const ED_AGE = document.getElementById('ed_edad');
+            const ED_BTN = document.getElementById('btn_ed');
+
+            //muestro valores
+            ED_NAME.value = data[0]
+            ED_TOWN.value = data[1]
+            ED_MAIL.value = data[2]
+            ED_AGE.value = data[3]
+            //mostrar modal
+            document.getElementById('edit_contact').showModal();
+            ED_BTN.onclick = function () {
+                let contact_edited = [ED_NAME.value, ED_TOWN.value, ED_MAIL.value, ED_AGE.value];
+                contactos[index] = contact_edited;
+                showContacts();
+                document.getElementById('edit_contact').close();
+            }
+
+        }
+        //EVENTOS
+        const INPUTS = document.querySelectorAll('input');
+        for (const input of INPUTS) {
+            input.onfocus = clearInputError
+        }
+        document.getElementById('btn_add').onclick = addContact
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tablas de multiplicar</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&display=swap"
+        rel="stylesheet" />
+    <style>
+        body {
+            counter-reset: titulos;
+            font-family: "Titillium Web", serif;
+            font-weight: 300;
+            font-style: normal;
+        }
+
+        .pregunta {
+            border: 1px solid grey;
+            padding: 1rem;
+            margin: 2rem;
+            border-radius: 1rem;
+        }
+
+        h2::before {
+            counter-increment: titulos;
+            content: "Caso " counter(titulos) " - ";
+        }
+
+        pre {
+            font-size: 1.3rem;
+            line-height: 1.5;
+            color: lightblue;
+            background-color: darkslategray;
+        }
+
+        #tabla_4,
+        #tabla_5 {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        ul {
+            width: 20%;
+            margin: 2rem 0;
+            padding: 0;
+            border: 2px solid black;
+        }
+
+        li {
+            list-style: none;
+        }
+
+        .resultado {
+            background-color: lightgrey;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Tablas de multiplicar</h1>
+    <article class="pregunta">
+        <h2>Tabla del 5</h2>
+        <p>Crea la tabla del cinco </p>
+        <button id="btn_uno">Genera</button>
+        <ul id="tabla_1" class="resultado"></ul>
+    </article>
+    <article class="pregunta">
+        <h2>Tabla definida por usuario</h2>
+        <p>Indicamos el número de tabla que debe mostrar</p>
+        <input type="number" id="ejem_2"><button id="btn_dos">Tabla</button>
+        <ul id="tabla_2" class="resultado"></ul>
+    </article>
+    <article class="pregunta">
+        <h2>Tabla personalizada</h2>
+        <p>Indicamos el número de tabla y cuantos cálculos tiene que mostrar para esa tabla (hasta el 10, 12, etc.)</p>
+        <p>Tabla: <input type="number" id="ejem_3"></p>
+        <p>Cálculos: <input type="number" id="ejem_3c"></p>
+        <button id="btn_tres">Tabla</button>
+        <ul id="tabla_3" class="resultado"></ul>
+    </article>
+    <article class="pregunta">
+        <h2>10 primeras tablas</h2>
+        <button id="btn_cuatro">10 tablas</button>
+        <div id="tabla_4" class="resultado"></div>
+    </article>
+    <article class="pregunta">
+        <h2>Tablas definidas por usuario</h2>
+        <p>Número de tablas:
+            <input type="number" id="ejem_5">
+            <button id="btn_cinco">Tablas</button>
+        </p>
+        <div id="tabla_5" class="resultado"></div>
+
+    </article>
+    <script>
+
+        //CASO 1
+        function casoUno() {
+            let tabla = '';
+            for (let i = 1; i <= 10; i++) {
+                tabla += `<li>5 x ${i} = ${5 * i}</li>`;
+            }
+            document.getElementById('tabla_1').innerHTML = tabla;
+        }
+        document.getElementById('btn_uno').onclick = casoUno;
+
+        //CASO 2
+        function casoDos() {
+            const NUMERO = parseInt(document.getElementById('ejem_2').value);
+            let contenido = `<li>Tabla del ${NUMERO}</li>`;
+            for (let i = 1; i <= 10; i++) {
+                contenido += `<li>${NUMERO} x ${i} = ${NUMERO * i}</li>`;
+            }
+            document.getElementById('tabla_2').innerHTML = contenido;
+        }
+        document.getElementById('btn_dos').onclick = casoDos;
+        document.getElementById('ejem_2').onchange = casoDos;
+
+        //CASO 3
+        function casoTres() {
+            const NUMERO = parseInt(document.getElementById('ejem_3').value);
+            const CALCULOS = parseInt(document.getElementById('ejem_3c').value);
+            let contenido = `<li>Tabla del ${NUMERO}</li>`;
+            for (let i = 1; i <= CALCULOS; i++) {
+                contenido += `<li>${NUMERO} x ${i} = ${NUMERO * i}</li>`;
+            }
+            document.getElementById('tabla_3').innerHTML = contenido;
+        }
+        document.getElementById('btn_tres').onclick = casoTres;
+        document.getElementById('ejem_3').onchange = casoTres;
+        document.getElementById('ejem_3c').onchange = casoTres;
+        
+        //CASO 4
+        function casoCuatro() {
+            let todo = '';
+            for (let i = 1; i<= 10; i++) {
+                let tabla = '<ul>';
+                    let lista = '';
+                    for (let j = 1; j <= 10; j++){
+                        lista += `<li>${i} x ${j} = ${i*j}</li>`;
+                    }
+                    tabla += lista +'</ul>';
+                    todo += tabla;
+                }
+                document.getElementById('tabla_4').innerHTML = todo;
+            }
+            document.getElementById('btn_cuatro').onclick = casoCuatro;
+        
+        //CASO 5
+            function casoCinco() {
+            let todo = '';
+            let total = parseInt(document.getElementById('ejem_5').value);
+
+            for (let i = 1; i<= 1000; i++) {
+                let tabla = '<ul>';
+                    let lista = '';
+                    for (let j = 1; j <= 10; j++){
+                        lista += `<li>${i} x ${j} = ${i*j}</li>`;
+                    }
+                    tabla += lista +'</ul>';
+                    todo += tabla;
+                }
+                document.getElementById('tabla_5').innerHTML = todo;
+            }
+            document.getElementById('btn_cinco').onclick = casoCinco;
+            document.getElementById('ejem_5').onchange = casoCinco;
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Cuestionario en JavaScript</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link
+		href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap"
+		rel="stylesheet">
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		body {
+
+			font-family: "Ubuntu", serif;
+			font-weight: 300;
+			font-style: normal;
+		}
+
+		.gr-nombre {
+			width: 40%;
+			margin: 2rem auto;
+			font-size: 1.5rem;
+		}
+
+		h1 {
+			font-size: 5rem;
+			text-align: center;
+			color: linen;
+			text-shadow: 4px 4px 2px chocolate, -1px -1px 0px chocolate;
+			margin: 5rem auto;
+			max-width: 900px;
+		}
+
+		#in_nombre_user {
+			font-size: 1.3rem;
+			border: 3px solid chocolate;
+			width: 100%;
+			margin-top: .5rem;
+			padding: .5rem;
+			color: chocolate;
+			border-radius: .5rem;
+		}
+
+		button,
+		li {
+			cursor: pointer;
+		}
+
+		.preg {
+			font-size: 1.5rem;
+			font-family: Trebuchet Ms, sans-serif;
+			color: chocolate;
+			font-style: italic;
+			margin-top: 3rem;
+		}
+
+		.resp {
+			padding: 1rem 2rem;
+			border-top: 1px solid chocolate;
+			background: linen;
+			color: darkred;
+		}
+
+		.resp li {
+			list-style: none;
+			font-size: 1.3rem;
+			margin: 1rem 0;
+			font-weight: bold;
+			border-radius: .5rem;
+			transition: all .5s;
+		}
+
+		.correcta {
+			background: lightgreen;
+			padding: .5rem;
+			color: darkgreen;
+			border: 2px solid;
+		}
+
+		.error {
+			background: indianred;
+			padding: .5rem;
+			color: darkred;
+			border: 2px solid;
+		}
+
+		#resultado {
+			width: 90%;
+			height: 290px;
+			background: white;
+			border: 2px solid chocolate;
+			padding: 2rem;
+			margin: 1rem auto;
+			transition: all 1s ease-in;
+			color: chocolate;
+		}
+
+		#resultado h3 {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin: 0.5rem;
+		}
+
+		#resultado span {
+			background-color: linen;
+			display: inline-block;
+			width: 20%;
+			text-align: center;
+			color: lightslategrey;
+		}
+
+		.principal {
+			display: flex;
+			flex-wrap: wrap;
+		}
+
+		#cuestionario {
+			width: 60%;
+			padding: 2rem;
+		}
+
+		.paneles {
+			width: 40%;
+			position: fixed;
+			right: 0;
+			top: 0;
+			box-shadow: -1px 0 5px chocolate;
+			height: 100%;
+			padding: 1rem 0;
+			background: linen;
+		}
+
+		.tit-res {
+			text-align: center;
+			font-family: sans-serif;
+			border-top: 1px solid;
+			border-bottom: 1px solid;
+			margin-bottom: 3rem;
+		}
+
+		#cont_inicio {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: #faf0e6eb;
+			border: 5px solid crimson;
+			display: flex;
+			flex-flow: column;
+			justify-content: flex-start;
+			z-index: 2;
+		}
+
+		#btn_inicio,
+		#btn_guardar,
+		#btn_rein2 {
+			color: linen;
+			font-size: 1.5rem;
+			width: 40%;
+			margin-left: 30%;
+			border: none;
+			background: chocolate;
+			padding: .5rem 0;
+			font-weight: bold;
+			border-radius: .5rem;
+		}
+
+		#btn_guardar,
+		#btn_rein2 {
+			margin: 4%;
+		}
+
+		.registros {
+			width: 90%;
+			margin: 2rem auto;
+			font-size: 1.5rem;
+			font-family: sans-serif;
+			color: chocolate;
+			background-color: white;
+			padding: 1rem;
+		}
+
+		.listado-resultados {
+			width: 100%;
+			border-collapse: collapse;
+			text-align: center;
+		}
+
+		th,
+		td {
+			border-bottom: 1px solid;
+		}
+
+		#alertas {
+			height: 150px;
+			font-size: 1.7rem;
+			padding: 1rem;
+			border: 5px solid;
+			width: 90%;
+			margin: 0 auto;
+			border-radius: 1rem;
+			font-weight: 700;
+			transition: all .5s;
+			background-size: 7rem;
+			background-repeat: no-repeat;
+			background-position: .5rem center;
+			padding-left: 9rem;
+			display: flex;
+			align-items: center;
+		}
+
+		.peligro {
+			background-color: indianred;
+			color: white;
+			border-color: crimson !important;
+			background-image: url(imgs/cancelar.png);
+		}
+
+		.aviso {
+			background-image: url(imgs/advertencia.png);
+			background-color: orange;
+			color: darkslategray;
+		}
+
+		.confirmacion {
+			background-image: url(imgs/valida.png);
+			background-color: lightgreen;
+			color: #3db39e;
+		}
+
+		.in-alerta {
+			font-size: 2rem;
+			width: 3rem;
+			border: 3px solid darkslategray;
+			border-radius: 0.4rem;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="contenedor">
+		<div id="cont_inicio">
+			<h1>Responde al siguiente cuestionario</h1>
+			<div class="gr-nombre">
+				<label for="in_nombre_user">Añade tu nombre</label>
+				<input type="text" id="in_nombre_user">
+			</div>
+			<button id="btn_inicio">Iniciar Test</button>
+		</div>
+		<div class="principal">
+			<div id="cuestionario">
+				<p class="preg">Indica cuál de los siguientes elementos tiene presentación en línea por defecto en HTML
+				</p>
+				<ul class="resp">
+					<li class="mal">Los elementos div</li>
+					<li class="mal">Los elementos p</li>
+					<li class="bien">Los elementos em</li>
+					<li class="mal">Los elementos pre</li>
+				</ul>
+				<p class="preg">Cómo se identifica un selector id en CSS</p>
+				<ul class="resp">
+					<li class="bien">Su nombre empieza por #</li>
+					<li class="mal">Su nombre empieza por .</li>
+					<li class="mal">Termina con el sufijo _id</li>
+					<li class="mal">Ninguna de las anteriores</li>
+				</ul>
+				<p class="preg">Una mediaquery se utiliza para</p>
+				<ul class="resp">
+					<li class="mal">No tener que usar más de un archivo CSS en un proyecto</li>
+					<li class="mal">Para combinar JS y CSS en un documento</li>
+					<li class="bien">Para ofrecer CSS de forma condicionada</li>
+					<li class="mal">Para poder usar varios estilos CSS sobre un mismo elemento</li>
+				</ul>
+				<p class="preg">El método getElementById se usa en JavaScript para</p>
+				<ul class="resp">
+					<li class="mal">Modificar el id de un elemento</li>
+					<li class="mal">Añadir rápidamente más clases css a un elemento</li>
+					<li class="mal">Para modificar el DOM del documento</li>
+					<li class="bien">Para seleccionar elementos del DOM usando su id</li>
+				</ul>
+				<p class="preg">¿Con qué expresión podemos declarar una variable en JS?</p>
+				<ul class="resp">
+					<li class="mal">Con la expresión var</li>
+					<li class="mal">Con la expresión let</li>
+					<li class="bien">Con las dos anteriores</li>
+					<li class="mal">Ninguna es correcta</li>
+				</ul>
+			</div>
+			<div class="paneles">
+				<div id="alertas"></div>
+				<div id="resultado">
+					<h2 class="tit-res">Resultado</h2>
+					<h3>Usuario: <span id="result_user"></span></h3>
+					<h3>Número de intento: <span id="intentos">1</span></h3>
+					<h3>Respuestas Correctas: <span id="result_bien">0</span></h3>
+					<h3>Respuestas incorrectas: <span id="result_mal">0</span></h3>
+					<h3>Preguntas restantes: <span id="restantes">5</span></h3>
+				</div>
+				<div class="registros">
+					<table class="listado-resultados">
+						<thead>
+							<tr>
+								<th>Usuario</th>
+								<th>Intento</th>
+								<th>Aciertos</th>
+								<th>Errores</th>
+							</tr>
+						</thead>
+						<tbody id="cuerpo_listado">
+						</tbody>
+					</table>
+				</div>
+				<button id="btn_guardar">Guardar Intento</button>
+				<button id="btn_rein2">Reiniciar</button>
+			</div>
+		</div>
+	</div>
+
+
+	<script>
+		let aciertos = 0;
+		let errores = 0;
+		let intento = 1;
+		let puedo_guardar = true;
+		let usuario;
+		const IN_USER = document.getElementById('in_nombre_user');
+		const INICIO = document.getElementById('cont_inicio');
+		const RESPUESTAS = document.getElementsByTagName('li');
+
+
+
+		function corregirPregunta() {
+			let clase = this.className;
+			if (clase == 'bien') {
+				this.className = 'correcta';
+				aciertos++;
+				muestraAlerta('Respuesta acertada', 'confirmacion');
+			} else {
+				this.className = 'error';
+				errores++;
+				muestraAlerta('Respuesta equivocada', 'aviso');
+			}
+			//acceder al elemento parent de un nodo
+			let nodo_ul = this.parentNode;
+			//llamo a la función para desactivar los li de este nodo
+			cambiaClic(nodo_ul);
+			//actualizamos marcador
+			actualizaMarcador();
+
+		}
+
+		function cambiaClic(nodo) {
+			//selecciono los elementos li de este nodo
+			const RESPUESTAS_DEL_NODO = nodo.getElementsByTagName('li');
+			//recorremos y asignamos nueva función onclick
+			for (const nuevo_li of RESPUESTAS_DEL_NODO) {
+				nuevo_li.onclick = nuevoClic;
+			}
+		}
+		function nuevoClic() {
+			muestraAlerta('No puedes cambiar la respuesta', 'peligro');
+		}
+		function actualizaMarcador() {
+			//pasar los aciertos a su elemento
+			document.getElementById('result_bien').textContent = aciertos;
+			//pasar los errores a su elemento
+			document.getElementById('result_mal').textContent = errores;
+			//añada el número intento
+			document.getElementById('intentos').textContent = intento;
+			//preguntas restantes
+			document.getElementById('restantes').textContent = 5 - (aciertos + errores);
+			//usuario
+			document.getElementById('result_user').textContent = usuario;
+		}
+		function preReincia() {
+			if (puedo_guardar) {
+				muestraAlerta('No has guardado el test. Confirma reinicio (S/N)', 'aviso', true)
+			} else {
+				reiniciaTest();
+			}
+		}
+		function reiniciaTest() {
+			//resetear variables de marcador
+			aciertos = 0;
+			errores = 0;
+			puedo_guardar = true;
+			//actualizo el intento
+			intento++;
+			//restablecer las clases bien y mal
+			for (const element of RESPUESTAS) {
+				if (element.className == 'correcta') {
+					element.className = 'bien';
+				} else if (element.className == 'error') {
+					element.className = 'mal';
+				}
+				//borramos funciones de cada elemento li
+				element.onclick = null;
+			}
+			//borro mensaje
+			muestraAlerta();
+			//volvemos al panel de inicio
+			INICIO.style.display = 'flex';
+			INICIO.style.justifyContent = 'center';
+			IN_USER.value = usuario;
+		}
+		function guardaIntento() {
+			//si ya he guardado no puedo volver a guardar
+			if (!puedo_guardar) {
+				muestraAlerta('No puedes volver a guardar el mismo intento', 'peligro');
+				return;
+			}
+			//si no he contestado a todas las preguntas no puedo guardar
+			if (aciertos + errores != 5) {
+				muestraAlerta('No puedes guardar el intento mientras queden preguntas por contestar', 'peligro');
+				return;
+			}
+			//para guardar creo una fila de tabla HTML con 4 celdas que contengan los datos a guardar
+			let fila = `<tr><td>${usuario}</td><td>${intento}</td><td>${aciertos}</td><td>${errores}</td></tr>`;
+			//paso la fila al TBODY de la tabla de resultados
+			document.getElementById('cuerpo_listado').innerHTML += fila;
+			//una vez guardado ya no debo poder guardar otra vez
+			puedo_guardar = false;
+			//muestro mensaje de confirmación de la operación
+			muestraAlerta('Datos del intento ' + intento + ' de ' + usuario + ' guardados  correctamente', 'confirmacion');
+		}
+		function muestraAlerta(alerta, codigo, accion) {
+			const ALERTA = document.getElementById('alertas');
+				ALERTA.textContent = alerta;
+				ALERTA.className = codigo;
+			if (accion) {
+				const in_confirma = document.createElement('input');
+				in_confirma.className = 'in-alerta';
+				in_confirma.oninput = function () {
+					if (in_confirma.value == 's' || in_confirma.value == 'S') {
+						reiniciaTest()
+					} else if (in_confirma.value == 'n' || in_confirma.value == 'N')  {
+						muestraAlerta('Reinicio cancelado', 'aviso')
+					}
+				};
+				ALERTA.append(in_confirma)
+			}
+		}
+
+		function iniciaTest() {
+			usuario = IN_USER.value;
+			if (!usuario) {
+				controlUsuario(false);
+			} else {
+				muestraAlerta('Suerte, ' + usuario, 'confirmacion');
+				//oculto el panel de inicio
+				INICIO.style.display = 'none';
+				//configuramos datos del marcador
+				actualizaMarcador();
+				//asigno funciones de respuesta a los LI
+				for (const cada_li of RESPUESTAS) {
+					cada_li.onclick = corregirPregunta;
+				}
+			}
+		}
+
+		function controlUsuario(modo) {
+			let color = modo ? 'chocolate' : 'crimson';
+			/*let color
+			if (modo == true) {
+				color = 'chocolate'
+			} else {
+				color = 'crimson'
+			}*/
+			let fondo = modo ? 'white' : 'crimson';
+			IN_USER.style.borderColor = color;
+			IN_USER.style.backgroundColor = fondo;
+
+		}
+
+		document.getElementById('btn_rein2').onclick = preReincia;
+		document.getElementById('btn_guardar').onclick = guardaIntento;
+		document.getElementById('btn_inicio').onclick = iniciaTest;
+		IN_USER.onclick = function () {
+			controlUsuario(true);
+		}
+		let altura = document.body.clientHeight;
+		INICIO.style.height = altura + 'px';
+	</script>
+
+
+
+
+
+
+
+</body>
+
+</html>

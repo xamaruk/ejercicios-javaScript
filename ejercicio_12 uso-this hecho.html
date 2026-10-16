@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uso de this en funciones</title>
+</head>
+<body>
+   <h1>Panel de votación</h1>
+   <button class="btn-voto" data-peli="peli_1" >Votar a película 1</button>
+   <button class="btn-voto" data-peli="peli_2">Votar a película 2</button>
+   <button class="btn-voto" data-peli="peli_3">Votar a película 3</button>
+   <button class="btn-voto" data-peli="peli_4">Votar a película 4</button>
+   <button class="btn-voto" data-peli="peli_5">Votar a película 5</button>
+   <button class="btn-voto" data-peli="peli_6">Votar a película 6</button>
+   <h2>Resultados:</h2>
+   <p>Votos para película 1: <span id="peli_1">0</span></p>
+   <p>Votos para película 2: <span id="peli_2">0</span></p>
+   <p>Votos para película 3: <span id="peli_3">0</span></p>
+   <p>Votos para película 4: <span id="peli_4">0</span></p>
+   <p>Votos para película 5: <span id="peli_5">0</span></p>
+   <p>Votos para película 6: <span id="peli_6">0</span></p>
+   <script>
+        function votaPeli() {
+            //acceder al id del elemento que vamos a cambiar en el DOM
+            const DESTINO = this.dataset.peli;
+            //acceder al elemento a través de su id
+            const NODO_DESTINO = document.getElementById(DESTINO);
+            //convertimos en número el contenido del elemento
+            let votos = parseInt(NODO_DESTINO.textContent);
+            //actualizamos el número
+            votos++;
+            //lo devolvemos al contenido del elemento
+            NODO_DESTINO.textContent = votos;
+        }
+        const BOTONES = document.querySelectorAll('.btn-voto');
+        for (const boton of BOTONES) {
+            boton.onclick = votaPeli;
+        }
+   </script>
+</body>
+</html>

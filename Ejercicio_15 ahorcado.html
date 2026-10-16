@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego Ahorcado</title>
+    <style>
+        body {
+            font-family: verdana;
+            color: darkslategray;
+        }
+
+        h1 {
+            font-size: 4rem;
+            text-align: center;
+        }
+
+        #intro {
+            text-align: center;
+            font-size: 2rem;
+            border: 6px solid darkslategray;
+            padding: 1rem;
+            border-radius: 1rem;
+            color: slategrey;
+            background-color: lightsteelblue;
+        }
+
+        #intro button {
+            font-size: 3rem;
+            font-weight: bold;
+            padding: .5rem;
+            background-color: lightslategrey;
+            border-radius: .5rem;
+            color: lightsteelblue;
+            border: 2px solid darkslategray;
+        }
+
+        #usuario {
+            height: 30px;
+            width: 250px;
+            margin: 0 2rem;
+            font-size: 2.2rem;
+            padding: 0.4rem;
+            color: slategray;
+            border: 2px solid;
+            border-radius: .3rem;
+            text-align: center;
+        }
+
+        .contenedor {
+            width: 960px;
+            margin: auto;
+        }
+
+        #casillero {
+            letter-spacing: .2rem;
+            font-size: 2rem;
+        }
+
+        #letra {
+            width: 40px;
+            height: 30px;
+            font-size: 1.8rem;
+            text-align: center;
+            color: darkslategray;
+            font-weight: bold;
+            border-radius: .4rem;
+        }
+
+        #entrada button,
+        #frases,
+        #selector button {
+            font-size: 1.1rem;
+            font-weight: bold;
+            padding: .3rem;
+            border-radius: .3rem;
+            border: navajowhite;
+            background-color: lightslategray;
+            color: white;
+            position: relative;
+            top: -5px;
+        }
+
+        #selector {
+            display: none;
+            font-size: 2rem;
+        }
+
+        #entrada {
+            display: none;
+        }
+
+        #mensajes {
+            display: none;
+            font-size: 1.5rem;
+            padding: 1rem;
+            border: 3px solid;
+            border-radius: 1rem;
+            margin: 5rem;
+        }
+
+        #alertas {
+            border: 6px solid;
+            margin: 4rem auto;
+            width: 600px;
+            border-radius: 1rem;
+            padding: 0.5rem 1rem;
+            text-align: center;
+            transition: all cubic-bezier(.51, -1.14, .83, 1.76) 1s;
+        }
+
+        .info {
+            color: darkblue;
+            background-color: lightblue;
+        }
+
+        .error {
+            color: darkred;
+            background-color: lightcoral;
+        }
+
+        .warning {
+            color: maroon;
+            background-color: darkorange;
+        }
+
+        .success {
+            color: darkgreen;
+            background-color: lightgreen;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="contenedor">
+        <h1>Jugar al ahorcado</h1>
+        <div id="alertas" class="success">
+            <h4>Juego de la frase oculta o del "ahorcado"</h4>
+            <p>Escribe tu nombre para empezar</p>
+        </div>
+        <div id="intro">
+            <label for="in_usuario">Nombre</label>
+            <input id="in_usuario" type="text">
+            <button id="btn_inicio">Vaaamoooos!</button>
+        </div>
+        <div id="selector">
+            <label for="in_frase">Dime tu frase oculta</label>
+            <input type="text" size="120" id="in_frase">
+            <button id="btn_frase">Empezar!</button>
+        </div>
+        <div id="entrada">
+            <input type="text" id="in_letra" maxlength="1" size="1">
+            <button id="btn_letra">Comprobar</button>
+        </div>
+        <div id="casillero"></div>
+        <div id="mensajes">
+            <p>Número de letras totales: <span id="out_letras"></span>. Quedan: <span id="out_restantes"></span></p>
+            <p>Letras falladas: <span id="out_error"></span>. Intentos restantes: <span id="out_intentos"></span></p>
+            <p>Letras encontradas: <span id="out_aciertos"></span></p>
+        </div>
+        <dialog id="restart">
+            <p>¿Quieres volver a jugar?</p>
+            <button id="btn_play_again">Jugar de nuevo</button>
+            <button id="btn_end">Salir del Juego</button>
+        </dialog>
+    </div>
+    <script>
+        //constantes del DOM
+        //inputs
+        const IN_USER = document.getElementById('in_usuario');
+        const IN_HIDDEN = document.getElementById('in_frase');
+        const IN_CHAR = document.getElementById('in_letra');
+        const RESTART = document.getElementById('restart');
+        //botones
+        const BTN_START = document.getElementById('btn_inicio');
+        const BTN_HIDDEN = document.getElementById('btn_frase');
+        const BTN_CHAR = document.getElementById('btn_letra');
+        const BTN_REPLAY = document.getElementById('btn_play_again');
+        const BTN_END = document.getElementById('btn_end');
+        //salida
+        const CASILLERO = document.getElementById('casillero');
+        const OUT_CHARS = document.getElementById('out_letras');
+        const OUT_LEFT = document.getElementById('out_restantes');
+        const OUT_ERROR = document.getElementById('out_error');
+        const OUT_TRIES = document.getElementById('out_intentos');
+        const OUT_FOUND = document.getElementById('out_aciertos');
+        const OUT_ALERT = document.getElementById('alertas');
+        //datos de aplicación
+        let user, hidden_text, clean_text, found_chars, fail_chars, total_chars, found_number, fail_number, isGameOver, guesses;
+        const total_errors = 6;
+        //elementos no disponibles para el texto
+        const forbidden_chars = '!·$%&/()=*\`^\'\"\\:;.,ªº|@#~€¬¡¿?1234567890';
+
+        //funciones
+        function userLog() {
+            user = IN_USER.value;
+            if (!user || user.length < 3) {
+                showAlert('Error de Usuario', 'El nombre debe tener 3 o más caracteres', 'warning');
+                setFocus(IN_USER);
+                return;
+            }
+            if (isWordValid(user)) {
+                startGame();
+            } else {
+                showAlert('Error de Usuario', 'El nombre no puede tener caracteres especiales ni números', 'warning');
+                setFocus(IN_USER);
+            }
+        }
+        function startGame() {
+            //establecer variables
+            hidden_text = '';
+            clean_text = '';
+            found_chars = '';
+            fail_chars = '';
+            total_chars = found_number = fail_number = guesses = 0;
+            isGameOver = false
+            //DOM
+            document.getElementById('intro').style.display = 'none'
+            document.getElementById('selector').style.display = 'block'
+            showAlert('Bienvenid@, ' + user, 'Introduce la frase que quieras que adivine tu compañer@', 'info')
+        }
+        function getHiddenText() {
+            hidden_text = IN_HIDDEN.value;
+            if (!hidden_text || hidden_text.length < 10) {
+                showAlert('Texto no válido', 'La frase a ocultar debe tener 10 caracteres como mínimo', 'warning');
+                setFocus(IN_HIDDEN);
+                return;
+            }
+            if (!isWordValid(hidden_text)) {
+                showAlert('Texto no válido', 'La frase a ocultar no puede contener caracteres especiales', 'warning');
+                setFocus(IN_HIDDEN);
+                return;
+            }
+            total_chars = hidden_text.length;
+            //llamar a limpia texto
+            clean_text = changeText(hidden_text);
+            //preparamos casillero
+            setWrapper(hidden_text);
+        }
+        function setWrapper(hidden_text) {
+            for (let i = 0; i < hidden_text.length; i++) {
+                const char = hidden_text[i];
+                const span = document.createElement('span')
+                if (char === ' ') {
+                    span.textContent = '·';
+                    total_chars--;
+                } else {
+                    span.textContent = '-'
+                }
+                CASILLERO.append(span);
+                showAlert('Empieza el juego', `Compañer@ de ${user}, es tu turno`, 'info');
+            }
+            //ajustes DOM
+            document.getElementById('selector').style.display = 'none'
+            document.getElementById('entrada').style.display = 'block'
+            document.getElementById('mensajes').style.display = 'block'
+            //actualiza panel
+            updatePanel();
+        }
+        function checkLetter() {
+            if (isGameOver) {
+                return
+            }
+            let letter = IN_CHAR.value;
+            if (letter.length !== 1 || !isCharValid(letter) || letter === ' ') {
+                setFocus(IN_CHAR);
+                showAlert('Error con la letra introducida', 'No puedes dejar el cuadro en blanco ni introducir caracteres no válidos. Tampoco puedes poner más de un carácter a la vez.', 'warning');
+                return;
+            }
+            letter = changeVowel(letter);
+            if (isLetterUsed(letter)) {
+                showAlert('Cuiadado', 'Esta letra ya la has usado en el juego', 'warning');
+                setFocus(IN_CHAR);
+                return;
+            }
+            if (clean_text.indexOf(letter) !== -1) {
+                manageSuccess(letter);
+            } else {
+                manageError(letter)
+            }
+            guesses++;
+            setFocus(IN_CHAR);
+        }
+
+        function manageSuccess(letter) {
+            let appearances = 0;
+            found_chars += letter;
+            for (let i = 0; i < clean_text.length; i++) {
+                const clean_letter = clean_text[i];
+                if (clean_letter === letter) {
+                    found_number++;
+                    appearances++;
+                    CASILLERO.children[i].textContent = hidden_text[i];
+                }
+            }
+            updatePanel();
+            showAlert('Acierto!', `La letra ${letter} se encuentra en la frase ${appearances} veces`, 'success');
+            if (found_number === total_chars) {
+                setFinalState('winner')
+            }
+        }
+        function manageError(letter) {
+            fail_chars += letter;
+            fail_number++;
+            updatePanel()
+            showAlert('Error!', `La letra ${letter} no se encuentra en la frase`, 'error');
+            // avisar último intento
+            if (fail_number === (total_errors - 1)) {
+                setTimeout( function () {
+                    showAlert('Atención', 'Te queda un último intento para encontrar la frase oculta', 'warning');
+                }, 1000)
+                
+            }
+            //comprobamos estado
+            if (fail_number === total_errors) {
+                setFinalState('looser')
+            }
+
+        }
+        function setFinalState(estado) {
+            isGameOver = true;
+            if (estado === 'winner') {
+                showAlert('Enhorabuena!, compi', `Ha encontrado la frase oculta en  ${guesses} intentos`, 'success');
+            } else {
+                showAlert('Lo sentimos!, compi', `No has encontrado la frase oculta y has tenido  ${guesses} ocasiones para hacerlo`, 'error');
+            }
+            setTimeout( showStartAgain, 1000 )
+        }
+        function showStartAgain() {
+             RESTART.showModal();
+        }
+
+        function isLetterUsed(letter) {
+            let isLetterUsed = false;
+            if (fail_chars.indexOf(letter) !== -1 || found_chars.indexOf(letter) !== -1) {
+                isLetterUsed = true;
+            }
+            return isLetterUsed;
+        }
+
+        function updatePanel() {
+            OUT_CHARS.textContent = total_chars
+            OUT_ERROR.textContent = fail_chars
+            OUT_FOUND.textContent = found_number;
+            OUT_LEFT.textContent = total_chars - found_number;
+            OUT_TRIES.textContent = total_errors - fail_number
+        }
+        function restartGame() {
+             RESTART.close();
+            document.getElementById('entrada').style.display = 'none'
+            startGame();
+            CASILLERO.innerHTML = '';
+            updatePanel();
+            showAlert('Juego reiniciado', `${user}, Escribe una nueva frase oculta`, 'info');
+            setFocus(IN_HIDDEN)
+        }
+        function endGame() {
+            //vaciar body
+            document.body.innerHTML = '';
+            //cerrar pestaña
+            //window.close();
+        }
+
+        //funciones auxiliares
+        function showAlert(title, message, format) {
+            OUT_ALERT.style.display = 'block';
+            OUT_ALERT.querySelector('h4').textContent = title;
+            OUT_ALERT.querySelector('p').textContent = message;
+            OUT_ALERT.className = format;
+        }
+
+        function setFocus(element) {
+            element.value = '';
+            element.focus();
+        }
+
+        function isCharValid(char) {
+            let isCharValid = false;
+            if (forbidden_chars.indexOf(char) === -1) {
+                isCharValid = true;
+            }
+            return isCharValid;
+        }
+        function isWordValid(word) {
+            let isWordValid = true;
+            for (let i = 0; i < word.length; i++) {
+                if (!isCharValid(word[i])) {
+                    isWordValid = false;
+                }
+            }
+            return isWordValid;
+        }
+        function changeVowel(vowel) {
+            vowel = vowel.toLowerCase();
+            let sanitizada = '';
+            switch (vowel) {
+                case 'á':
+                case 'à':
+                case 'â':
+                case 'ä':
+                    sanitizada = 'a';
+                    break;
+                case 'é':
+                case 'è':
+                case 'ê':
+                case 'ë':
+                    sanitizada = 'e';
+                    break;
+                case 'í':
+                case 'ì':
+                case 'î':
+                case 'ï':
+                    sanitizada = 'i';
+                    break;
+                case 'ó':
+                case 'ò':
+                case 'ô':
+                case 'ö':
+                    sanitizada = 'o';
+                    break;
+                case 'ú':
+                case 'ù':
+                case 'û':
+                case 'ü':
+                    sanitizada = 'u';
+                    break;
+
+                default:
+                    sanitizada = vowel;
+                    break;
+            }
+            return sanitizada;
+        }
+        function changeText(text) {
+            let new_text = '';
+            for (let i = 0; i < text.length; i++) {
+                const vowel = text[i].toLowerCase();
+                new_text += changeVowel(vowel);
+            }
+            return new_text;
+        }
+
+        //eventos
+        BTN_START.onclick = userLog
+        BTN_HIDDEN.onclick = getHiddenText
+        BTN_CHAR.onclick = checkLetter
+        IN_CHAR.oninput = checkLetter
+        BTN_REPLAY.onclick = restartGame;
+        BTN_END.onclick = endGame;
+    </script>
+
+</body>
+
+</html>

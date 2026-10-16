@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listado películas</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,400;0,700;1,300;1,400&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        body {
+            font-family: 'Ubuntu', sans-serif;
+        }
+
+        .contenedor {
+            width: 1200px;
+            background-color: linen;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        h1 {
+            font-size: 3rem;
+            color: burlywood;
+            text-align: center;
+            text-shadow: 2px 2px 0 black;
+        }
+
+        .entrada {
+            margin: 2rem auto;
+            width: 60%;
+            background-color: burlywood;
+            padding: 1rem;
+            border-radius: .5rem;
+        }
+
+        .form-entrada {
+            display: flex;
+            align-items: center;
+        }
+
+        .bloque-a {
+            width: 80%;
+        }
+
+        .fila {
+            margin: 1rem 0;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: snow;
+        }
+
+        .fila label {
+            display: inline-block;
+            width: 40%;
+            text-align: right;
+            margin-right: 1rem;
+        }
+
+        #nombre_peli {
+            border: 0;
+            padding: 0.2rem .5rem;
+            color: darkgoldenrod;
+            font-size: 1.2rem;
+            font-style: italic;
+            font-family: Ubuntu;
+            width: 15rem;
+        }
+
+        .fila select {
+            width: 15rem;
+            border: 0;
+            font-size: 1rem;
+            color: darkgoldenrod;
+            font-family: ubuntu;
+        }
+
+        button {
+            width: 6rem;
+            border: 0;
+            padding: .3rem;
+            font-size: 1.2rem;
+            font-family: ubuntu;
+            font-style: italic;
+            font-weight: bold;
+            color: darkgoldenrod;
+        }
+
+        .bloque-b {
+            position: relative;
+        }
+
+        #aviso {
+            color: red;
+            font-size: 1.4rem;
+            background-color: white;
+            border: 2px solid;
+            padding: .5rem;
+            position: absolute;
+            width: 130%;
+            top: -20px;
+            display: none;
+        }
+
+        .salida {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .salida article {
+            width: 33%;
+        }
+
+        .tit-categoria {
+            color: burlywood;
+            border-bottom: 3px solid;
+            margin: 0 1rem;
+            text-align: center;
+        }
+
+        .rojo {
+            border: 2px solid;
+            color: darkred;
+            background-color: tomato;
+        }
+
+        .amarillo {
+            border: 2px solid;
+            color: darkgoldenrod;
+            background-color: yellow;
+        }
+
+        .verde {
+            border: 2px solid;
+            color: darkgreen;
+            background-color: lime;
+        }
+
+        .salida p {
+            margin: 1rem;
+            font-size: 1.5rem;
+            padding: 0.2rem;
+            border-radius: 0.3rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="contenedor">
+        <h1>Biblioteca películas</h1>
+        <div class="entrada">
+            <div class="form-entrada">
+                <div class="bloque-a">
+                    <div class="fila">
+                        <label for="nombre_peli">Título</label>
+                        <input type="text" id="nombre_peli" name="nombre_peli">
+                    </div>
+                    <div class="fila">
+                        <label for="categoria_peli">Selecciona categoría</label>
+                        <select name="categoria_peli" id="categoria_peli">
+                            <option value="art_comedia">Comedia</option>
+                            <option value="art_drama">Drama</option>
+                            <option value="art_docu">Documental</option>
+                        </select>
+                    </div>
+                    <div class="fila">
+                        <label for="color_peli">Selecciona Código</label>
+                        <select name="color_peli" id="color_peli">
+                            <option value="rojo">Rojo</option>
+                            <option value="amarillo">Amarillo</option>
+                            <option value="verde">Verde</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="bloque-b">
+                    <p id="aviso">No has añadido el título</p>
+                    <div class="fila">
+                        <button id="btn_add">Añadir</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <section class="salida">
+            <article id="art_comedia">
+                <h2 class="tit-categoria">Comedia</h2>
+            </article>
+            <article id="art_drama">
+                <h2 class="tit-categoria">Drama</h2>
+            </article>
+            <article id="art_docu">
+                <h2 class="tit-categoria">Documental</h2>
+            </article>
+        </section>
+    </div>
+    <script>
+        function addPeli() {
+            //defino las variables que recogen la información del formulario
+            const TITULO = document.getElementById('nombre_peli').value;
+            const CLASE = document.getElementById('color_peli').value;
+            const CATEGORIA = document.getElementById('categoria_peli').value;
+
+            //creo un nodo de tipo párrafo con el título y la clase recibidos
+            //const PELICULA = '<p class="' + CLASE + '">' + TITULO + '</p>';
+            //usando template strings
+            const PELICULA = `<p class="${CLASE}">${TITULO}</p>`;
+
+            //añado ese nodo al destino que indica la categoría si tenemos el título
+            if (TITULO) {
+                addParrafo(PELICULA, CATEGORIA);
+            } else {
+                muestraError();
+            }
+
+        }
+        // añadir párrafo a DOM
+        function addParrafo(parrafo, destino) {
+            //añadimos el párrafo
+            document.getElementById(destino).innerHTML += parrafo;
+            //borramos input
+            document.getElementById('nombre_peli').value = '';
+            //cursor a input
+            document.getElementById('nombre_peli').focus();
+        }
+        //control de error
+        function muestraError() {
+            document.getElementById('aviso').style.display = 'block';
+        }
+        function ocultaError() {
+            document.getElementById('aviso').style.display = 'none';
+        }
+        //eventos
+        document.getElementById('btn_add').onclick = addPeli
+        document.getElementById('nombre_peli').onfocus = ocultaError;
+    </script>
+</body>
+
+</html>

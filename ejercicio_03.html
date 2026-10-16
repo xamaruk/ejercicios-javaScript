@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicio 3</title>
+    <style>
+        #escenario {
+            border: 3px solid;
+            width: 90%;
+            height: 650px;
+            margin: 1rem auto;
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            align-content: flex-start;
+        }
+
+        button {
+            margin: 1rem 0;
+            font-size: 1.2rem;
+        }
+
+        .cuadro {
+            width: 100px;
+            height: 100px;
+            background-color: lime;
+            border: 1px solid darkgreen;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .circulo {
+            width: 100px;
+            height: 100px;
+            background-color: pink;
+            border: 1px solid darkred;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="contenedor">
+        <h1>Añadir elementos al DOM</h1>
+        <div class="fila">
+            <label for="in_texto">Texto para el elemento</label>
+            <input type="text" id="in_texto">
+        </div>
+        <button id="btn_cuad">Añade Cuadro</button>
+        <button id="btn_circ">Añade Círculo</button>
+        <button id="btn_reset">Limpia Escenario</button>
+        <div id="escenario"></div>
+    </div>
+    <script>
+        //definir nodo input
+        const in_nombre = document.getElementById('in_texto');
+        //creamos variable con el texto a mostrar en cada elemento
+        let texto = '';
+        //iniciamos un contador para los dos tipos de elementos
+        let contador = 1;
+        function addCirculo() {
+            preparaTexto();
+            //insertamos un párrafo con la clase circulo y el texto del input como contenido
+            document.getElementById('escenario').innerHTML += '<p id="elemento'+(contador - 1) +'" class="circulo">' + texto + '</p>';
+            //limpiamos el input
+            limpiaInput();
+        }
+        function addCuadro() {
+            preparaTexto();
+            //insertamos un párrafo con la clase cuadro y el texto del input como contenido
+            document.getElementById('escenario').innerHTML += '<p id="elemento'+(contador - 1) +'" class="cuadro">' + texto + '</p>';
+            limpiaInput();
+        }
+        function resetEscenario() {
+            document.getElementById('escenario').innerHTML = '';
+        }
+        function preparaTexto() {
+            //en primer lugar uso el texto del input
+            texto = in_nombre.value;
+            //si el input viene vacío saco un prompt para pedir el texto
+            if (texto == "") {
+                texto = window.prompt('Pon aquí el nombre para continuar');
+                //si el prompt está vacío o cancelado pongo texto de sustitución
+                if (texto == "" || texto == null) {
+                    texto = 'DEFAULT';
+                }
+            }
+            //añado el contador delante del texto
+            texto = contador + ' - ' + texto;
+            //actualizo el contador
+            contador++;
+        }
+        function limpiaInput() {
+            //borramos input y ponemos foco en él
+            in_nombre.value = '';
+            in_nombre.focus();
+        }
+        //asignamos
+        document.getElementById('btn_circ').onclick = addCirculo;
+        document.getElementById('btn_cuad').onclick = addCuadro;
+        document.getElementById('btn_reset').onclick = resetEscenario;
+    </script>
+</body>
+
+</html>

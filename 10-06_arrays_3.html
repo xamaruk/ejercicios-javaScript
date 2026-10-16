@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Más trabajos con Arrays</title>
+</head>
+
+<body>
+    <div class="contenedor">
+        <button id="btn_azar">Genera Números</button>
+    </div>
+    <script>
+        let azares = []
+        /*function getLucky() {
+            azares = []
+            let i = 0
+            while (azares.length < 10) {
+                let num = Math.ceil(Math.random() * 100)
+                if (azares.indexOf(num) === -1) {
+                    azares.push(num)
+                }
+                i++
+            }
+            console.log(azares, i + ' tiradas')
+        }*/
+       function getLucky() {
+        let num;
+        azares = []
+        do {
+            num = Math.ceil(Math.random() * 20);
+            if (azares.indexOf(num) === -1) {
+                azares.push(num);
+            }
+
+        } while (azares.length < 10 );
+        console.log(azares)
+    }
+        document.getElementById('btn_azar').onclick = getLucky
+    </script>
+</body>
+
+</html>

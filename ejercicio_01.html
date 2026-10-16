@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicio 1 JS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .contenedor {
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 60%;
+            min-width: 400px;
+        }
+
+        button {
+            font-size: 1.2rem;
+            margin: 2rem 0;
+            padding: 0.2rem;
+        }
+
+        #pagina {
+            width: 60%;
+            min-width: 400px;
+            border: 3px solid grey;
+            box-shadow: 2px 2px 4px black;
+            min-height: 600px;
+            padding: 3rem;
+            font-size: 1.3rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="contenedor">
+        <h1>Ejercicio 1 - Añadir párrafos</h1>
+        <button id="btn_parrafo">Añade párrafo</button>
+        <div id="pagina"></div>
+    </div>
+    <script>
+        function crearParrafo() {
+            let contenido = document.getElementById('pagina').innerHTML;
+            contenido += '<p contentEditable>Nuevo párrafo Creado</p>';
+            document.getElementById('pagina').innerHTML = contenido;
+        }
+        document.getElementById('btn_parrafo').onclick = crearParrafo;
+    </script>
+</body>
+
+</html>

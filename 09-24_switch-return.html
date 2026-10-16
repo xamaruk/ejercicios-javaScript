@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uso de switch con return</title>
+</head>
+
+<body>
+    <div class="contenedor">
+        <h1>Ejemplo de switch y return</h1>
+        <p>Reemplazar vocales con tildes y diéresis por vocales sanitizadas</p>
+        <label for="in_vocal">Vocal:</label>
+        <input type="text" name="in_vocal" id="in_vocal" size="4">
+        <label for="out_vocal">Salida</label>
+        <input type="text" name="out_vocal" id="out_vocal" size="4">
+        <p>Cambia palabra</p>
+        <label for="in_palabra">Escribe palabra con tildes</label>
+        <input type="text" name="in_palabra" id="in_palabra">
+        <button id="btn_cambiar">Cambia</button>
+        <p id="out_palabra" style="border:1px solid; padding: .5rem"></p>
+        <h2>Validación de caracteres</h2>
+        <label for="in_char">Carácter no permitido:</label>
+        <input type="text" name="" id="in_char">
+        <p id="list_char" style="border:1px solid; padding: .5rem"></p>
+        <label for="ck_char">Comprobar cadena</label>
+        <input type="text" name="" id="ck_char">
+        <button id="btn_ck">Comprobar</button>
+        <p>resultado: <span id="out_char"></span></p>
+
+    </div>
+    <script>
+        function limpiaVocal(letra) {
+            //pasarla a minúsculas
+            letra = letra.toLowerCase();
+            //defino una variable de salida
+            let sanitizada = '';
+            //buscamos las posibles tildes
+            switch (letra) {
+                case 'á':
+                case 'à':
+                case 'â':
+                case 'ä':
+                    sanitizada = 'a';
+                    break;
+                case 'é':
+                case 'è':
+                case 'ê':
+                case 'ë':
+                    sanitizada = 'e';
+                    break;
+                case 'í':
+                case 'ì':
+                case 'î':
+                case 'ï':
+                    sanitizada = 'i';
+                    break;
+                case 'ó':
+                case 'ò':
+                case 'ô':
+                case 'ö':
+                    sanitizada = 'o';
+                    break;
+                case 'ú':
+                case 'ù':
+                case 'û':
+                case 'ü':
+                    sanitizada = 'u';
+                    break;
+
+                default:
+                    sanitizada = letra;
+                    break;
+            }
+           return sanitizada;
+        }
+        function compruebaLetra() {
+           const limpia =  limpiaVocal(this.value);
+           document.querySelector('#out_vocal').value = limpia;
+        }
+        document.querySelector('#in_vocal').oninput = compruebaLetra;
+        //palabra
+        //elementos del DOM que vamos a usar 
+        const IN_PALABRA = document.querySelector('#in_palabra');
+        const OUT_PALABRA = document.querySelector('#out_palabra');
+       
+        //recibe una cadena y devuelve la misma cadena sin tildes
+        function limpiaPalabra(palabra_tildes) {
+            //preparar una variable de salida
+            let palabra_limpia = '';
+            //recorre todas las letras de la entrada y las convierte a sin tildes en la variable de salida
+            for (let i = 0; i < palabra_tildes.length; i++) {
+                const letra = palabra_tildes[i].toLowerCase();
+                palabra_limpia += limpiaVocal(letra);
+            }
+            //devuelve la palabra convertida
+            return palabra_limpia;
+        }
+
+        //recibe un objeto de entrada, del que extrae su value, y lo devuelve convertido sin tildes en el objeto de salida que también recibe por segundo parámetro
+        function muestraLimpia(entrada, salida) {
+            let palabra_sucia = entrada.value;
+            let palabra_limpia = limpiaPalabra(palabra_sucia);
+            salida.textContent = palabra_limpia;
+        }
+
+        document.querySelector('#btn_cambiar').onclick = function () {
+            muestraLimpia(IN_PALABRA, OUT_PALABRA);
+        }
+
+        //PROHIBIDOS
+        //definimos variable global que almacena todos los caracteres que no vamos a poder usar
+        let prohibidos = '';
+
+        //función que pasa cada carácter que recibe a la lista de prohibidos y lo muestra en el DOM
+        function addProhibido(caracter) {
+            prohibidos += caracter;
+            document.getElementById('list_char').textContent = prohibidos;
+        }
+        //llama a la anterior pasando el valor tecleado como parámetro
+        function inputProhibidos() {
+            //si no hay carácter no la llama
+            if (this.value != '') {
+                addProhibido(this.value);
+            }
+            //después de almacenarlo vacía el input
+            this.value = '';
+        }
+
+        //comprueba si un carácter está en el listado de los prohibidos
+        function checkCaracter(char) {
+            //inicialmente suponemos que no se puede usar
+            let resultado = false;
+            //comprobamos si no ésta en la lista de prohibidos
+            if(prohibidos.indexOf(char) == -1) {
+                //entonces sí se puede usar
+                resultado = true;
+            }
+            return resultado;
+        }
+
+        //hace lo mismo que la anterior pero para toda la cadena
+        function checkCadena(cadena) {
+            //inicialmenete sí es válida
+           let isValid = true;
+           //pero si alguno de sus elementos no valida, la cadena ya no será válida
+           for (let i = 0; i < cadena.length; i++) {
+            //esta línea comprueba si cada carácter individual es válido
+            const isCharOk =checkCaracter( cadena[i]);
+            if (!isCharOk) {
+                isValid = false;
+            }
+           }
+           return isValid;
+        }
+        //recoge la cadena del DOM, la valida y muestra el resultado en el DOM
+        function muestraValidacion() {
+            let cadena = document.getElementById('ck_char').value
+            let validacion = 'La cadena no es válida'
+            if (checkCadena(cadena)) {
+                validacion = 'La cadena es válida';
+            }
+            document.getElementById('out_char').textContent = validacion;
+        }
+        document.getElementById('in_char').oninput = inputProhibidos;
+        document.getElementById('btn_ck').onclick = muestraValidacion;
+    </script>
+</body>
+
+</html>

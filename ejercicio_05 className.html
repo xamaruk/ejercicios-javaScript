@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animación por JS</title>
+    <style>
+        .mando {
+            display: flex;
+            width: 170px;
+            flex-wrap: wrap;
+            justify-content: center;
+            background-color: whitesmoke;
+            padding: .5rem;
+            border-radius: 1rem;
+            border: 1px solid lightgray;
+            position: relative;
+        }
+
+
+        .boton {
+            font-size: 2rem;
+            color: #ff6347c9;
+            border: none;
+            box-shadow: 1px -1px 2px gray;
+            text-shadow: -1px 1px 0px darkgray;
+            cursor: pointer;
+            width: 50%;
+            display: flex;
+        }
+
+        .boton:hover {
+            opacity: .8;
+        }
+
+        #btn_arrizq {
+            background: linear-gradient(to bottom, #dcdcdc 0%, #8b8b8b 100%);
+            border-radius: 3px 3px 0 0;
+        }
+
+        #btn_abjizq {
+            background: linear-gradient(to bottom, #8b8b8b 0%, #dcdcdc 100%);
+            border-radius: 0 0 3px 3px;
+        }
+
+        #btn_arrdcha {
+            background: linear-gradient(to right, #dcdcdc 0%, #8b8b8b 100%);
+            border-radius: 3px 0 0 3px;
+            justify-content: flex-end;
+        }
+
+        #btn_abjdcha {
+            background: linear-gradient(to right, #8b8b8b 0%, #dcdcdc 100%);
+            border-radius: 0 3px 3px 0;
+            justify-content: flex-end;
+        }
+
+        #btn_reset {
+            background: #8c8c8c;
+            position: absolute;
+            top: 27%;
+            justify-content: center;
+        }
+
+        .botonera {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .pantalla {
+            position: relative;
+            width: 90%;
+            height: 600px;
+            margin: 1rem auto;
+            border: 5px solid grey;
+            overflow: hidden;
+            background: radial-gradient(ellipse at center, #000 0%, #454545 100%);
+        }
+
+        #elemento {
+            width: 60px;
+            height: 60px;
+            background-color: tomato;
+            position: absolute;
+            transition: all .5s cubic-bezier(.79, .14, .15, .86);
+        }
+
+        .arr-izq {
+            top: 0;
+            left: 0;
+        }
+
+        .arr-dcha {
+            top: 0;
+            left: calc(100% - 60px);
+        }
+
+        .abj-izq {
+            left: 0;
+            top: calc(100% - 60px);
+        }
+
+        .abj-dcha {
+            left: calc(100% - 60px);
+            top: calc(100% - 60px);
+        }
+
+        .reset {
+            left: calc(50% - 30px);
+            top: calc(50% - 30px);
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Movimiento de elementos</h1>
+    <h2>Segundo caso. Aplicando clases CSS para cada posición.</h2>
+    <div class="botonera">
+        <div class="mando">
+            <button class="boton" id="btn_arrizq">&#11126; </button>
+            <button class="boton" id="btn_arrdcha">&#11127;</button>
+            <button class="boton" id="btn_abjizq">&#11129;</button>
+            <button class="boton" id="btn_abjdcha">&#11128;</button>
+            <button class="boton" id="btn_reset">&#11212;</button>
+        </div>
+    </div>
+    <div class="pantalla">
+        <div id="elemento" class="reset"></div>
+    </div>
+
+    <script>
+        const NODO = document.getElementById('elemento');
+        function arribaIzquierda() {
+            NODO.className = 'arr-izq';
+        }
+        function arribaDerecha() {
+            NODO.className = 'arr-dcha';
+        }
+        function abajoIzquierda() {
+            NODO.className = 'abj-izq';
+        }
+        function abajoDerecha() {
+            NODO.className = 'abj-dcha';
+        }
+        function reset() {
+            NODO.className = 'reset';
+        }
+       
+        //eventos
+        document.getElementById('btn_arrizq').onclick = arribaIzquierda;
+        document.getElementById('btn_arrdcha').onclick = arribaDerecha;
+        document.getElementById('btn_abjizq').onclick = abajoIzquierda;
+        document.getElementById('btn_abjdcha').onclick = abajoDerecha;
+        document.getElementById('btn_reset').onclick = reset;
+
+    </script>
+</body>
+
+</html>

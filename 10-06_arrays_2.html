@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trabajo con Arrays</title>
+</head>
+
+<body>
+    <div class="contenedor">
+        <h1>Trabajo con Arrays</h1>
+        <label for="in_nombre">Nombre de contacto:</label>
+        <input type="text" name="" id="in_nombre">
+        <button id="btn_nombre">Añadir</button>
+        <div class="fila">
+            <label for="in_num_del">Introduce el número de contacto a modificar</label>
+            <input type="number" name="" id="in_num_del" size="3" min="1">
+            <button id="btn_del_num">Eliminar</button>
+            <button id="btn_edit_num">Editar</button>
+        </div>
+        <h3>Lista de contactos</h3>
+        <ul id="contact_list"></ul>
+        <h3>Extraer información</h3>
+        <p>Listado separado por guiones: <button id="btn_join_1">Obtener</button></p>
+        <p id="out_join_1"></p>
+        <label for="in_join_2">Indica el elemento separador</label>
+        <input type="text" name="" id="in_join_2" size="1">
+        <button id="btn_join_2">Obtener</button>
+        <p id="out_join_2"></p>
+        <h3>Listado de nombres y posiciones</h3>
+        <button id="btn_foreach_1">Generar listado</button>
+        <div id="out_foreach_1"></div>
+    </div>
+
+    <script>
+        let datos = ['Ana', 'Eva', 'Samuel', 'Javi'];
+        function addContact() {
+            let nombre = document.getElementById('in_nombre').value;
+            let nombre_limpio = checkText(nombre)
+            if (!nombre_limpio) {
+                alert('el texto no es válido')
+                return;
+            }
+            if (isInArray(datos, nombre_limpio)) {
+                alert('nombre repetido')
+                return
+            }
+            datos.push(nombre_limpio);
+            showContacts()
+        }
+        document.getElementById('btn_nombre').onclick = addContact
+
+        function delContact() {
+            let pos = parseInt(document.getElementById('in_num_del').value) - 1;
+            if (pos > datos.length - 1) {
+                return;
+            }
+            datos.splice(pos, 1);
+            showContacts();
+        }
+        document.getElementById('btn_del_num').onclick = delContact
+        function editContact() {
+            let pos = parseInt(document.getElementById('in_num_del').value) - 1;
+            if (pos > datos.length - 1) {
+                return;
+            }
+            let nuevo_nombre = prompt('Teclea el nuevo nombre para ' + datos[pos]);
+            let nombre_limpio = checkText(nuevo_nombre);
+            if (nombre_limpio && !isInArray(datos, nombre_limpio)) {
+                datos.splice(pos, 1, nombre_limpio);
+                showContacts();
+            } else {
+                alert('El nombre no es válido o ya está en el listado')
+            }
+        }
+        document.getElementById('btn_edit_num').onclick = editContact;
+
+        function showContacts() {
+            console.log(datos)
+            //vaciando el elemento contenedor
+            document.getElementById('contact_list').innerHTML = '';
+            // recorrer el array
+            for (const nombre of datos) {
+                //crear un elemento LI para cada contacto
+                let nodo = document.createElement('li');
+                nodo.textContent = nombre;
+                //mostrar el elemento en DOM
+                document.getElementById('contact_list').append(nodo)
+            }
+            //establecer límite en number
+            setNumber();
+        }
+
+        function checkText(text) {
+            //limpiar espacios ppio y final
+            text = text.trim();
+            while (text.indexOf('  ') !== -1) {
+                text = text.replaceAll('  ', ' ');
+            }
+            if (text.length < 3) {
+                return null;
+            }
+            return text;
+        }
+        function setNumber() {
+            let num = datos.length;
+            document.getElementById('in_num_del').setAttribute('max', num);
+        }
+        function isInArray(array, element) {
+            if (array.indexOf(element) === -1) {
+                return false;
+            }
+            return true;
+        }
+        //Funciones join
+        function getContactsByDash() {
+            document.getElementById('out_join_1').textContent = datos.join('-');
+        }
+        document.getElementById('btn_join_1').onclick = getContactsByDash
+        function getContactsByElement() {
+            let char = document.getElementById('in_join_2').value[0];
+            document.getElementById('out_join_2').textContent = datos.join(char);
+        }
+        document.getElementById('btn_join_2').onclick = getContactsByElement
+        function makeContactList() {
+            document.getElementById('out_foreach_1').innerHTML = ''
+            let lista = document.createElement('ul')
+            datos.forEach((elemento, indice) => createLi(lista, elemento, indice))
+             document.getElementById('out_foreach_1').append(lista)
+        }
+        function createLi(contenedor,name, pos) {
+                const elemento_lista = document.createElement('li')
+                elemento_lista.textContent = `El contacto ${name} está en la posición ${pos + 1}`;
+                contenedor.append(elemento_lista)
+            }
+
+        document.getElementById('btn_foreach_1').onclick = makeContactList
+        //Inicio
+        showContacts();
+
+    </script>
+</body>
+
+</html>

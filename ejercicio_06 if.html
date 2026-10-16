@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicio 6 JS Uso de if()</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Ubuntu", sans-serif;
+            color: #666;
+        }
+
+        .contenedor {
+            max-width: 1160px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            border-bottom: 4px double lightgray;
+        }
+
+        .intro {
+            font-size: 1.3rem;
+            line-height: 1.5;
+            margin: 2rem 3rem;
+            border-left: 3px solid;
+            padding-left: 1rem;
+        }
+
+        .intro p {
+            font-weight: 500;
+        }
+
+        .intro ul {
+            margin-left: 3rem;
+            margin-top: 1rem;
+            font-weight: 300;
+        }
+
+        .intro li {
+            margin: 1rem auto;
+        }
+
+        .ejercicio {
+            margin: 2rem auto;
+            border: 2px solid;
+            color: cornflowerblue;
+            border-radius: 1rem;
+            padding: 1rem 2rem;
+            max-width: 800px;
+        }
+
+        .ejercicio h2 {
+            text-align: center;
+            margin: -1rem auto 3rem;
+            font-size: 2rem;
+            letter-spacing: 1px;
+        }
+
+        .numero {
+            font-size: 1.7rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            padding: 1rem 0;
+        }
+
+        .ejercicio input {
+            font-size: 1.7rem;
+            width: 100px;
+            border: 1px solid cornflowerblue;
+            color: cornflowerblue;
+        }
+
+        .botonera {
+            text-align: center;
+        }
+
+        .botonera button {
+            font-size: 1.7rem;
+            color: cornflowerblue;
+            width: 130px;
+            background-color: white;
+            border: 1px solid cornflowerblue;
+            border-radius: 3px;
+        }
+
+        .mayor {
+            background-color: lightgreen;
+            color: darkgreen;
+            border: 3px solid;
+        }
+
+        .menor {
+            background-color: pink;
+            color: darkred;
+            border: 3px solid;
+        }
+
+        .iguales {
+            background-color: yellow;
+            color: darkorange;
+            border: 3px solid;
+        }
+
+        .mayor input {
+            border: 1px solid darkgreen;
+            color: darkgreen;
+        }
+
+        .menor input {
+            border: 1px solid darkred;
+            color: darkred;
+        }
+
+        .iguales input {
+            border: 1px solid darkorange;
+            color: darkorange;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="contenedor">
+        <h1>Ejercicio 06. Uso de expresión <em>if()</em></h1>
+        <div class="intro">
+            <p>Prepara un documento en el que introduzcamos 2 números en 2 inputs diferentes, junto a ellos inserta un
+                botón.</p>
+            <ul>
+                <li>Al pulsar el botón se ejecuta una función que compara los dos números y asigna un formato a cada
+                    input
+                    mediante una clase CSS: formato verde para el más alto, rojo para el menor, y amarillo si son
+                    iguales.
+                </li>
+                <li>Después de pulsar el botón los inputs quedan bloqueados y no se puede insertar un nuevo valor en
+                    ellos.
+                </li>
+                <li>Añade además un botón que permita resetear la aplicación para volver a empezar</li>
+            </ul>
+        </div>
+        <div class="ejercicio">
+            <h2>Comparador</h2>
+            <div id="valor_1" class="numero">
+                <label for="num_1">Introduce número:</label>
+                <input type="number" id="num_1">
+            </div>
+            <div id="valor_2" class="numero">
+                <label for="num_2">Introduce número:</label>
+                <input type="number" id="num_2">
+            </div>
+            <div class="botonera">
+                <button id="btn_compara">Comparar</button>
+                <button id="btn_reset">Resetear</button>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

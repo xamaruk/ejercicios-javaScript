@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Ejercicio 9 JavaScript</title>
+    <style>
+      #panel {
+        display: flex;
+        gap: 2rem;
+      }
+      label {
+        font-size: 1.5rem;
+        font-family: trebuchet ms;
+        letter-spacing: 2px;
+        color: lightslategrey;
+        background-color: lightgreen;
+      }
+
+      input {
+        border: 2px solid;
+        padding: 0.3rem;
+        top: -0.3rem;
+        position: relative;
+        color: green;
+        font-size: 1.2rem;
+      }
+
+      button {
+        padding: 0.3rem;
+        border-radius: 0.3rem;
+        background-color: lightgreen;
+        font-weight: bold;
+        font-size: 1.3rem;
+        color: lightslategray;
+      }
+      #aviso {
+        font-size: 2rem;
+        color: red;
+        text-align: center;
+        margin-left: 10rem;
+      }
+
+      .pizarra {
+        border: 1px solid darkgray;
+        margin: 1rem;
+        padding: 0.5rem;
+        background-color: lightgray;
+      }
+
+      .resultados {
+        background-color: lavender;
+        color: darkgreen;
+        font-family: sans-serif;
+        padding: 0 0.4rem;
+        position: relative;
+        height: 2.25rem;
+        line-height: 2.25rem;
+      }
+
+      .resultados input {
+        top: 0;
+        background-color: lightgreen;
+        color: darkgreen;
+        font-weight: bold;
+        font-size: 1.2rem;
+        right: 0;
+        position: absolute;
+        padding-left: 1rem;
+        width: 40%;
+      }
+
+      .resultados span {
+        font-size: 1.2rem;
+        font-weight: bold;
+        border: 1px solid;
+        padding: 0.1rem 0.3rem;
+      }
+      .mayor {
+        color: blue;
+      }
+      .menor {
+        color: red;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="panel">
+      <div class="col col-izqda">
+        <div>
+          <label for="num1">intro número 1</label>
+          <input type="number" id="num1" />
+        </div>
+        <div>
+          <label for="num2">intro número 2</label>
+          <input type="number" id="num2" />
+        </div>
+        <div>
+          <button id="btn_calcular">Calcular</button>
+          <button id="btn_calcular_mayor">Calcular Buscando Mayor</button>
+        </div>
+      </div>
+      <div class="col col-dcha">
+        <p id="aviso" class="borrar"></p>
+      </div>
+    </div>
+    <div id="resultados1" class="pizarra">
+      <p class="resultados">
+        La suma de los números da: <input type="text" id="res_1" readonly />
+      </p>
+      <p class="resultados">
+        La resta de los números da: <input type="text" id="res_2" readonly />
+      </p>
+      <p class="resultados">
+        La multiplicación de los números da:
+        <input type="text" id="res_3" readonly />
+      </p>
+      <p class="resultados">
+        La división de los números da: <input type="text" id="res_4" readonly />
+      </p>
+      <p class="resultados">
+        El resto de la división da: <input type="text" id="res_5" readonly />
+      </p>
+    </div>
+    <div class="calculo-mayor pizarra">
+      <p class="resultados">
+        La suma de<span class="mayor borrar"></span> más
+        <span class="menor borrar"></span> da:
+        <span id="resultado1" class="borrar"></span>
+      </p>
+      <p class="resultados">
+        La resta de <span class="mayor borrar"></span> menos
+        <span class="menor borrar"></span> da:
+        <span id="resultado2" class="borrar"></span>
+      </p>
+      <p class="resultados">
+        La multiplicación de <span class="mayor borrar"></span> por
+        <span class="menor borrar"></span> es igual a:
+        <span id="resultado3" class="borrar"></span>
+      </p>
+      <p class="resultados">
+        La división de <span class="mayor borrar"></span> entre
+        <span class="menor borrar"></span> da:
+        <span id="resultado4" class="borrar"></span>
+      </p>
+      <p class="resultados">
+        El resto de la división de <span class="mayor borrar"></span> entre
+        <span class="menor borrar"></span> es:
+        <span id="resultado5" class="borrar"></span>
+      </p>
+    </div>
+    <script>
+      function hazCalculos() {
+        //limpiamos pantalla
+        limpiaPantalla();
+         
+        //leer valores de los dos inputs
+        let valor1 = parseFloat(document.getElementById("num1").value);
+        let valor2 = parseFloat(document.getElementById("num2").value);
+
+        //validación
+        if (isNaN(valor1) || isNaN(valor2) || valor1 == 0 ||valor2 == 0) {
+         muestraMensaje('Datos erróneos', 'darkred');
+          return;
+        }
+      
+        // hacer cálculos
+        let suma = valor1 + valor2;
+        let resta = valor1 - valor2;
+        let multiplicacion = valor1 * valor2;
+        let division = parseInt(valor1 / valor2);
+        let resto = valor1 % valor2;
+
+        //sacamos resultados por pantalla
+        document.getElementById("res_1").value = suma;
+        document.getElementById("res_2").value = resta;
+        document.getElementById("res_3").value = multiplicacion;
+        document.getElementById("res_4").value = division;
+        document.getElementById("res_5").value = resto;
+      }
+      function calculoMayor() {
+        //limpiamos pantalla
+        limpiaPantalla();
+
+        //leer valores de los dos inputs
+        let valor1 = parseFloat(document.getElementById("num1").value);
+        let valor2 = parseFloat(document.getElementById("num2").value);
+
+         //validación
+        if (isNaN(valor1) || isNaN(valor2) || valor1 == 0 ||valor2 == 0) {
+          muestraMensaje('Datos no válidos', 'lightcyan');
+          return;
+        }
+     
+        // encontrar el mayor y el menor
+        let mayor = 0;
+        let menor = 0;
+        if (valor1 > valor2) {
+          mayor = valor1;
+          menor = valor2;
+        } else {
+          mayor = valor2;
+          menor = valor1;
+        }
+        // hacer cálculos
+        let suma = mayor + menor;
+        let resta = mayor - menor;
+        let multiplicacion = mayor * menor;
+        let division = parseInt(mayor / menor);
+        let resto = mayor % menor;
+
+        //sacamos resultados por pantalla
+        document.getElementById("resultado1").textContent = suma;
+        document.getElementById("resultado2").textContent = resta;
+        document.getElementById("resultado3").textContent = multiplicacion;
+        document.getElementById("resultado4").textContent = division;
+        document.getElementById("resultado5").textContent = resto;
+
+        //escribir número mayor
+        let mayores = document.getElementsByClassName('mayor');
+        for (const cada_uno_de_los_elementos of mayores) {
+          cada_uno_de_los_elementos.textContent = mayor;
+        }
+        //escribir número menor
+        let menores = document.getElementsByClassName('menor');
+        for (const elemento of menores) {
+          elemento.textContent = menor;
+        }
+      }
+      function limpiaPantalla() {
+        //colección por nombre de clase CSS
+        const elementos_a_borrar = document.getElementsByClassName('borrar');
+        for (const elemento of elementos_a_borrar) {
+          elemento.textContent = '';
+        }
+        //colección por nombre de etiqueta de los inputs dentro de div#resultado1
+        const inputs_salida = document.getElementById('resultados1').getElementsByTagName('input');
+        for (const elemento of inputs_salida) {
+          elemento.value = '';
+        }
+      }
+      function muestraMensaje(mensaje, color) {
+           document.getElementById('aviso').textContent = mensaje ;
+           document.getElementById('aviso').style.backgroundColor = color ;
+      }
+   
+
+      document.getElementById("btn_calcular").onclick = hazCalculos;
+      document.getElementById("btn_calcular_mayor").onclick = calculoMayor;
+    </script>
+  </body>
+</html>

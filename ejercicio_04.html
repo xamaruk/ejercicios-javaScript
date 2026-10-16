@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mover elementos</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        #escenario {
+            width: 70%;
+            height: 650px;
+            border: 5px solid black;
+            background-color: darkgrey;
+            margin: 2rem auto;
+            position: relative;
+        }
+ 
+        .mando {
+            display: flex;
+            width: 200px;
+            flex-wrap: wrap;
+            justify-content: center;
+            background-color: whitesmoke;
+            padding: .5rem;
+            border-radius: 1rem;
+            border: 1px solid lightgray;
+        }
+
+
+        .boton {
+            width: 30%;
+            font-size: 2rem;
+            color: #ff6347c9;
+            border: none;
+            box-shadow: 1px -1px 2px gray;
+            text-shadow: -1px 1px 0px darkgray;
+            cursor: pointer;
+        }
+
+        .boton:hover {
+            opacity: .8;
+        }
+
+        #btn_sube {
+            margin: 0 35%;
+            background: linear-gradient(to bottom, #dcdcdc 0%, #8b8b8b 100%);
+            border-radius: 3px 3px 0 0;
+        }
+
+        #btn_baja {
+            background: linear-gradient(to bottom, #8b8b8b 0%, #dcdcdc 100%);
+            border-radius: 0 0 3px 3px;
+        }
+
+        #btn_izq {
+            background: linear-gradient(to right, #dcdcdc 0%, #8b8b8b 100%);
+            border-radius: 3px 0 0 3px;
+        }
+
+        #btn_dcha {
+            background: linear-gradient(to right, #8b8b8b 0%, #dcdcdc 100%);
+            border-radius: 0 3px 3px 0;
+        }
+
+        #btn_reset {
+            background: #8c8c8c;
+        }
+
+        .botonera {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .mando-velocidad {
+            display: flex;
+            width: 300px;
+            background: whitesmoke;
+            flex-direction: column;
+            align-items: center;
+            padding: 1rem 0;
+            gap: 1rem;
+            font-size: 1.5rem;
+            font-family: script;
+            color: #8b8b8b;
+            border: 1px solid lightgray;
+            border-radius: 1rem;
+        }
+ 
+
+        #elemento {
+            width: 60px;
+            height: 60px;
+            background-color: tomato;
+            position: absolute;
+            transition: all .5s cubic-bezier(.79, .14, .15, .86);
+            left: calc(50% - 30px);
+            top: calc(50% - 30px);
+        }
+
+        #txt_velocidad {
+            width: 30px;
+            color: gray;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="contenedor">
+        <h1>Mover elementos en pantalla</h1>
+        <div class="botonera">
+            <div class="mando">
+            <button class="boton" id="btn_sube">⯅</button>
+            <button class="boton" id="btn_izq">⯇</button>
+            <button class="boton" id="btn_reset">⯌</button>
+            <button class="boton" id="btn_dcha">⯈</button>
+            <button class="boton" id="btn_baja">⯆</button>
+        </div>
+        <div class="mando-velocidad">
+            <label for="in_velocidad">Velocidad:</label>
+            <input type="range" min="0" max="250" step="25" id="in_velocidad">
+            <input type="text" id="txt_velocidad" readonly>
+        </div>
+        </div>
+        <div id="escenario">
+            <div id="elemento"></div>
+        </div>
+    </div>
+    <script>
+        /****** PRIMER CASO - VARIABLE EXTERNA
+        let topActual = 0;
+        let leftActual = 0;
+        function mueveAbajo() {
+            topActual += 100;
+            document.getElementById('elemento').style.top = topActual +'px';
+        }
+        function mueveArriba() {
+            topActual -= 100;
+            document.getElementById('elemento').style.top = topActual +'px';
+        }
+        function mueveDerecha() {
+            leftActual += 100;
+            document.getElementById('elemento').style.left = leftActual +'px';
+        }
+        function mueveIzquierda() {
+            leftActual -= 100;
+            document.getElementById('elemento').style.left = leftActual +'px';
+        }
+        function mueveCentro() {
+            topActual = 325;
+            leftActual = 640;
+            document.getElementById('elemento').style.left = leftActual + 'px';
+            document.getElementById('elemento').style.top = topActual + 'px';
+        }
+
+        document.getElementById('btn_sube').onclick = mueveArriba;
+        document.getElementById('btn_baja').onclick = mueveAbajo;
+        document.getElementById('btn_dcha').onclick = mueveDerecha;
+        document.getElementById('btn_izq').onclick = mueveIzquierda;
+        document.getElementById('btn_reset').onclick = mueveCentro;
+        *******/
+       /*SEGUNDO CASO LEYENDO POSICIÓN ELEMENTO*/
+       let velocidad;
+       const elemento = document.getElementById('elemento');
+       
+       function mueveAbajo() {
+           let posTop = elemento.offsetTop;
+           posTop += velocidad;
+           if (posTop > 580) {
+            posTop = 580;
+           }
+           elemento.style.top = posTop + 'px';
+        }
+        function mueveArriba() {
+            let posTop = elemento.offsetTop;
+            posTop -= velocidad;
+            if (posTop < 0) {
+                posTop = 0;
+            }
+            elemento.style.top = posTop + 'px';
+        }
+        function mueveDerecha() {
+            let posLeft = elemento.offsetLeft;
+            posLeft += velocidad;
+            //calculo la anchura del escenario para definir el límite de movimiento
+            let ancho_escena = document.getElementById('escenario').offsetWidth
+            //si la posición es mayor que el escenario la corregimos
+            if (posLeft > ancho_escena - 70) {
+                posLeft = ancho_escena - 70;
+            }
+            elemento.style.left = posLeft + 'px';
+        }
+        function mueveIzquierda() {
+            let posLeft = elemento.offsetLeft;
+            posLeft -= velocidad;
+            if (posLeft < 0) {
+                posLeft = 0;
+            }
+            elemento.style.left = posLeft + 'px';
+        }
+        function mueveCentro() {
+            elemento.style.left = 'calc(50% - 30px)';
+            elemento.style.top = '295px';
+        }
+        function setVelocidad() {
+            velocidad = parseInt(document.getElementById('in_velocidad').value);
+            document.getElementById('txt_velocidad').value = velocidad;
+        }
+        
+        document.getElementById('btn_baja').onclick = mueveAbajo;
+        document.getElementById('btn_sube').onclick = mueveArriba;
+        document.getElementById('btn_dcha').onclick = mueveDerecha;
+        document.getElementById('btn_izq').onclick = mueveIzquierda;
+        document.getElementById('btn_reset').onclick = mueveCentro;
+        document.getElementById('in_velocidad').oninput = setVelocidad;
+
+        setVelocidad();
+        mueveCentro();
+        </script>
+</body>
+</html>

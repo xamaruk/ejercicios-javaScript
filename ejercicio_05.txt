@@ -1,0 +1,2 @@
+Prepara una clase CSS para ubicar el elemento en cada una de las esquinas de su contenedor, y otra para posicionarlo al centro. En total 5 clases CSS disponibles para el mismo elemento.
+Al pulsar en cada uno de los botones del mando se ejecuta una función que añade la clase correspondiente al elemento.

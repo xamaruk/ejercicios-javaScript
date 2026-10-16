@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+		label {
+  font-size: 1.5rem;
+  font-family: trebuchet ms;
+  letter-spacing: 2px;
+  color: lightslategrey;
+  background-color: lightgreen;
+}
+input {
+	border: 2px solid;
+	padding: .3rem;
+	top: -.3rem;
+	position: relative;
+	color: green;
+	font-size: 1.2rem;
+}
+button {
+  padding: .3rem;
+  border-radius: .3rem;
+  background-color: lightgreen;
+  font-weight: bold;
+  font-size: 1.3rem;
+  color: lightslategray;
+}
+.pizarra {
+  border: 1px solid darkgray;
+  margin: 1rem;
+  padding: .5rem;
+  background-color: lightgray;
+}
+.resultados {
+	background-color: lavender;
+	color: darkgreen;
+	font-family: sans-serif;
+	padding: 0 0.4rem;
+	position: relative;
+	height: 2.25rem;
+	line-height: 2.25rem;
+}
+.resultados input {
+  top: 0;
+  background-color: lightgreen;
+  color: darkgreen;
+  font-weight: bold;
+  font-size: 1.2rem;
+  right: 0;
+  position: absolute;
+  padding-left: 1rem;
+  width: 40%;
+}
+	</style>
+</head>
+<body>
+	<div>
+		<label for="num1">intro número 1</label>
+		<input type="number" id="num1">
+	</div>
+	<div>
+		<label for="num2">intro número 2</label>
+		<input type="number" id="num2">
+	</div>
+	<button id="btn_calculo">Calcular</button>
+	<div class="pizarra">
+		<p class="resultados">La suma de los números da: <input type="text" id="res_1" disabled></p>
+		<p class="resultados">La resta de los números da: <input type="text" id="res_2" disabled></p>
+		<p class="resultados">La multiplicación de los números da: <input type="text" id="res_3" disabled></p>
+		<p class="resultados">La división de los números da: <input type="text" id="res_4" disabled></p>
+		<p class="resultados">El resto de la división da: <input type="text" id="res_5" disabled></p>
+	</div>
+	<h3 id="salida"></h3>
+<script>
+	//pedimos nombre usuario
+	const nombre = window.prompt('Dime tu nombre');
+	//declaramos contador inicial
+	let contador = 1;
+	function hazCalculos() {
+		//leer datos de entrada - números
+		const num1 = document.getElementById('num1').value;
+		const num2 =  parseFloat(document.getElementById('num2').value);
+		//proceso de datos
+		const suma = num1 + num2;
+		const resta = num1 - num2;
+		const multiplicacion = num1 * num2;
+		const division = parseInt(num1 / num2);
+		const resto = num1 % num2;
+		//salida de datos
+		document.getElementById('res_1').value = suma;
+		document.getElementById('res_2').value = resta;
+		document.getElementById('res_3').value = multiplicacion;
+		document.getElementById('res_4').value = division;
+		document.getElementById('res_5').value = resto;
+		//mensaje despedida
+		document.getElementById('salida').textContent = nombre + ', estos son tus resultados del cálculo ' + contador;
+		//incremento contador
+		contador++;
+	}
+	//asignar a botón
+	document.getElementById('btn_calculo').onclick = hazCalculos;
+</script>
+</body>
+</html>

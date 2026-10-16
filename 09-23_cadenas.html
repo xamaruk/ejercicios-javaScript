@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uso de Strings</title>
+    <style>
+        #casillero {
+            margin: 2rem;
+            border: 1px solid;
+            padding: 1rem;
+        }
+
+        #casillero span {
+            font-size: 4rem;
+            border: 1px solid;
+            padding: 0.5rem;
+            margin: 1rem;
+            min-width: 3rem;
+            display: inline-block;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="contenedor">
+        <h1>Uso de Strings</h1>
+        <h2>Métodos toLowerCase y toUpperCase</h2>
+        <p>Teclea contraseña</p>
+        <label for="in_cadena1">Introduce clave (no distingue mayúsculas)</label>
+        <input type="text" id="in_cadena1">
+        <button id="btn_cd1">Comprobar</button>
+        <p id="mensaje_1"></p>
+        <h2>Métodos indexOf y charAt</h2>
+        <label for="in_cadena2">Palabra o frase a ocultar</label>
+        <input type="text" name="in_cadena2" id="in_cadena2">
+        <button id="btn_cd2">Ocultar</button>
+        <div id="casillero"></div>
+        <label for="in_cadena3">Prueba con una letra</label>
+        <input type="text" id="in_cadena3" size="3">
+        <div class="marcador">
+            <p>Letras totales: <span id="totales"></span></p>
+            <p>Letras encontradas: <span id="encontradas"></span></p>
+            <p>Letras falladas: <span id="falladas"></span></p>
+        </div>
+        <script>
+            let cadena = 'Algo de texto como ejemplo';
+            //cadena = cadena.toUpperCase();
+            console.log(cadena.toUpperCase(), cadena);
+            let pass = 'abcdef';
+            function comprobarPass() {
+                let txt = document.getElementById('in_cadena1').value;
+                let salida;
+                if (txt.toLowerCase() == pass) {
+                    salida = 'Clave válida';
+                } else {
+                    salida = 'Clave incorrecta';
+                }
+                document.getElementById('mensaje_1').textContent = salida;
+            }
+            document.getElementById('btn_cd1').onclick = comprobarPass;
+
+            //AHORCADO
+            let txt_oculto = '';
+            let colec_span;
+            let total_letras = 0;
+            let encontradas = 0;
+            let falladas = 0;
+            const ERRORES = 3;
+            function ocultaTexto() {
+                //lee el texto a ocultar y lo guarda en la variable global
+                txt_oculto = document.getElementById('in_cadena2').value;
+                //defino totales
+                total_letras = txt_oculto.length;
+                //pasamos a DOM el total de letras a encontrar
+                document.querySelector('#totales').textContent = total_letras;
+                //preparamos el casillero
+                let celdas_salida = '';
+                for (let i = 0; i < txt_oculto.length; i++) {
+                    celdas_salida += `<span>-</span>`;
+                }
+                //pasamos el casillero al DOM
+                document.getElementById('casillero').innerHTML = celdas_salida;
+                //almacenamos el casillero en una variable global
+                colec_span = document.querySelectorAll('#casillero span');
+            }
+            function compruebaLetra() {
+                //leer la letra del input
+                let letra = this.value;
+                //pasamos a minúsculas la letra y el texto oculto para que sea más fácil buscar
+                letra = letra.toLowerCase();
+                let oculto_min = txt_oculto.toLowerCase();
+                //comprobamos si la letra introducida está en la palabra oculta
+                if (oculto_min.indexOf(letra) !== -1) {
+                    //recorro toda la cadena oculta para compararla con la letra buscada
+                    for (let i = 0; i < oculto_min.length; i++) {
+                        const letra_oculta = oculto_min.charAt(i);
+                        if (letra_oculta == letra) {
+                            //muestro en el casillero su letra correspondiente en el texto oculto
+                            colec_span[i].textContent = txt_oculto.charAt(i);
+                            //actualizo encontradas
+                            encontradas++;
+                            //mostramos en DOM
+                            document.querySelector('#encontradas').textContent = encontradas;
+                            //compruebo si ya he encontrado todas
+                            if (encontradas == total_letras) {
+                                alert('Juego ganado');
+                                this.disabled = true;
+                            }
+                        }
+                        
+                    }
+                } else {
+                    //pasamos la letra fallada al DOM
+                   document.querySelector('#falladas').textContent += letra + ' - ';
+                   //incrementamos número de errores
+                   falladas++;
+                   //compruebo si ya he consumido todos los fallos posibles
+                   if (falladas == ERRORES) {
+                    alert('game over');
+                    //deshabilitamos el input
+                    this.disabled = true;
+                   }
+                }
+                this.focus()
+                this.value = ''
+            }
+            document.getElementById('btn_cd2').onclick = ocultaTexto;
+            document.getElementById('in_cadena3').onchange = compruebaLetra
+        </script>
+    </div>
+</body>
+
+</html>

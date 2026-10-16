@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ejercicios Condicionales</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&display=swap"
+    rel="stylesheet" />
+  <style>
+    body {
+      counter-reset: titulos;
+      font-family: "Titillium Web", serif;
+      font-weight: 300;
+      font-style: normal;
+    }
+
+    .pregunta {
+      border: 1px solid grey;
+      padding: 1rem;
+      margin: 2rem;
+      border-radius: 1rem;
+    }
+
+    h2::before {
+      counter-increment: titulos;
+      content: "Caso " counter(titulos) " - ";
+    }
+
+    pre {
+      font-size: 1.3rem;
+      line-height: 1.5;
+      color: lightblue;
+      background-color: darkslategray;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="contenedor">
+    <h1>Ejercicios con estructura if</h1>
+    <div class="indice"></div>
+    <article class="pregunta">
+      <h2>
+        Aplica una función sobre el siguiente botón para que al pulsarlo nos
+        pida un valor en un prompt y nos informe a continuación de si es un
+        dato numérico o no lo es.
+      </h2>
+      <button onclick="esNumero()">Es número</button>
+      <pre><code>
+                function esNumero() {
+                    let dato = prompt('Introduce un valor');
+                    if (isNaN(dato)) {
+                        alert('El dato no es un número');
+                    } else {
+                        alert('El dato es un número')
+                    }
+                }
+            </code></pre>
+    </article>
+    <article class="pregunta">
+      <h2>
+        Desarrolla una función sobre el siguiente botón para que nos pida un
+        número en un prompt y nos diga si el número es par o impar
+      </h2>
+      <button onclick="esPar()">Es par</button>
+      <pre><code>
+                function esPar() {
+                    let dato = prompt('Introduce un valor');
+                    if (dato%2 == 0) {
+                        alert('Es un número par');
+                    } else {
+                        alert('Es un número impar')
+                    }
+                }
+            </code></pre>
+    </article>
+    <article class="pregunta">
+      <h2>
+        Desarrolla una función sobre el siguiente botón para que nos pida un
+        número en un prompt y nos diga si el número es mayor o menor de 25
+      </h2>
+      <button onclick="esMayor()">Mayor 25</button>
+      <pre><code>
+                function esMayor() {
+                    let dato = prompt('Introduce un valor');
+                    if (dato &gt; 25) {
+                        alert('Es mayor que 25');
+                    } else {
+                        alert('No es mayor que 25')
+                    }
+                }
+            </code></pre>
+    </article>
+    <article class="pregunta">
+      <h2>
+        Desarrolla una función sobre el siguiente botón para que nos pida un
+        número en un prompt y nos diga si es o no número, y en caso
+        afirmativo, si es par o impar y mayor o menor de 25
+      </h2>
+      <button onclick="todoJunto()">Todo junto</button>
+      <pre><code>
+                function todoJunto() {
+                    let dato = prompt('Introduce un valor');
+                    mensaje = '';
+                    if (isNaN(dato)) {
+                       mensaje = dato +' no es un número.';
+                    } else {
+                        mensaje = dato + ' es un número.';
+                        if(dato%2 == 0) {
+                            mensaje += '\n' + dato + ' es par.';
+                        } else {
+                            mensaje += '\n' + dato + ' es impar.';
+                        }
+                        if (dato &gt; 25) {
+                            mensaje += '\n' + dato + ' es mayor que 25.';
+                        } else {
+                            mensaje += '\n' + dato + ' no es mayor que 25.';
+                        }
+                    }
+                    alert(mensaje);
+                }
+            </code></pre>
+    </article>
+    <article class="pregunta"></article>
+  </div>
+  <script>
+    function esNumero() {
+      let dato = prompt("Introduce un valor");
+      if (isNaN(dato)) {
+        alert("El dato no es un número");
+      } else {
+        alert("El dato es un número");
+      }
+    }
+    function esPar() {
+      let dato = prompt("Introduce un valor");
+      if (dato % 2 == 0) {
+        alert("Es un número par");
+      } else {
+        alert("Es un número impar");
+      }
+    }
+    function esMayor() {
+      let dato = prompt("Introduce un valor");
+      if (dato > 25) {
+        alert("Es mayor que 25");
+      } else {
+        alert("No es mayor que 25");
+      }
+    }
+    function todoJunto() {
+      let dato = prompt("Introduce un valor");
+      mensaje = "";
+      if (isNaN(dato)) {
+        mensaje = dato + " no es un número.";
+      } else {
+        mensaje = dato + " es un número.";
+        if (dato % 2 == 0) {
+          mensaje += "\n" + dato + " es par.";
+        } else {
+          mensaje += "\n" + dato + " es impar.";
+        }
+        if (dato > 25) {
+          mensaje += "\n" + dato + " es mayor que 25.";
+        } else {
+          mensaje += "\n" + dato + " no es mayor que 25.";
+        }
+      }
+      alert(mensaje);
+    }
+    //EJEMPLOS DE SELECTORES
+    const TITULAR = document.querySelector('h1')
+    TITULAR.style.textAlign = 'center';
+    const SUBTITULOS = document.querySelectorAll('.pregunta h2');
+    for (const elemento of SUBTITULOS) {
+      elemento.style.color = 'darkslategray';
+      elemento.style.textDecoration = 'underline';
+    }
+    let texto = '<ul>';
+    for (const elemento of SUBTITULOS) {
+       texto += '<li>' + elemento.textContent + '</li>';
+    }
+    texto += '</ul>';
+    document.querySelector('.indice').innerHTML = texto;
+   function createIndex() {
+  
+   }
+  </script>
+</body>
+
+</html>
