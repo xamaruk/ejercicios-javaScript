@@ -60,4 +60,4 @@ El propósito del proyecto es practicar y reforzar conceptos de JavaScript media
 
 ## Autor
 
-Repositorio personal de ejercicios de JavaScript por `xamaruk`.
+Repositorio personal de ejercicios de JavaScript por Alberto Villanueva.
