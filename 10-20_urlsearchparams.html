@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Título de la página</title>
+</head>
+
+<body>
+    <div class="contenedor">
+        <h1>Recepción de parámetros por URL</h1>
+        <p>Para acceder a los parámetros que lleguen a través de la URL tenemos la clase de JS
+            <code>URLSearchParams</code>.
+        </p>
+        <p>Esta clase puede trabajar a partir de un dato devuelto por la clase URL, o bien de window.location o bien de
+            un string con toda la información.</p>
+        <p>En el primer caso, podemos acceder a la ruta completa de este modo:
+            <code>
+            let ruta = window.location.search
+        </code>
+        </p>
+        <p>Pero es más correcto hacerlo creando una nueva instancia de la clase URL:</p>
+        <pre><code>
+            let ruta = new URL(window.location);
+        </code></pre>
+        <p>En el segundo caso sería algo así:</p>
+        <pre><code>
+            let ruta = new URL("https://example.com?data=texto&num=5");
+        </code></pre>
+        <p>Pero en ambos casos, a partir de ahí acceder a sus parámetros, almacenados en la propiedad
+            <code>search</code> del objeto:
+        </p>
+        <pre><code>
+                let params = new URLSearchParams(ruta.search);
+            </code></pre>
+        <p>Eso nos va a permitir acceder a las propiedades y métodos de la clase URLSearchParams. Entre ellos tenemos
+            métodos para acceder a un dato concreto, o métodos para iterar todos los datos del objeto y leerlos. La
+            clase también contiene métodos para añadir o eliminar parámetros al objeto.</p>
+        <h2>Leer un parámetro conociendo su nombre de antemano (método <em>get()</em>)</h2>
+        <p>Sí se que en la ruta llegan dos parámetros llamados "data" y "num" puedo leerlos así:</p>
+        <pre><code>
+                let dato = params.get("data");
+                let numero = params.get("num");
+            </code></pre>
+        <p>A partir de ahí ya disponemos de los datos recibidos por url para usarlos en el script</p>
+        <button id="btn_param">Leer datos recibidos en este documento</button>
+        <p>Parámetro <strong>data:</strong><span id="param_1"></span></p>
+        <p>Parámetro <strong>num:</strong><span id="param_2"></span></p>
+        <h2>Iterar las propiedades de los parámetros</h2>
+        <p>Si no conocemos los nombres de los parámetros podems usar los métodos <code>entries() o forEach()</code> para
+            iterar el objeto y acceder a ellos:</p>
+        <h3>Entries()</h3>
+        <pre><code>
+        for (const [key, value] of params.entries()) {
+            console.log(`entrie ${key} =&gt; ${value}`);
+        }
+            </code></pre>
+        <h3>forEach()</h3>
+        <pre><code>
+        params.forEach((value, key) =&gt; {
+            console.log('forEach', key, '=&gt;', value);
+        });
+        </code></pre>
+    </div>
+    <script>
+        let url = new URL(window.location);
+        let params = new URLSearchParams(url.search);
+        //Sabemos que por la url nos llegan los parámetros data y num, y accedemos a ellos así
+        let data = params.get('data');
+        let num = params.get('num');
+        console.log(window.location.search)
+        console.log(url.searchParams.get('data'))
+        console.log('con nombre definido =>', data, num)
+        //en caso de no saber el nombre de los parámetros los recorremos con entries o forEach
+
+        //entries
+        for (const [key, value] of params.entries()) {
+            console.log(`entrie ${key} => ${value}`);
+        }
+
+        // forEach
+        params.forEach((value, key) => {
+            console.log('forEach', key, '=>', value);
+        });
+        document.getElementById('btn_param').onclick = () => {
+            document.getElementById('param_1').textContent = data;
+            document.getElementById('param_2').textContent = num;
+        }
+    </script>
+</body>
+
+</html>
