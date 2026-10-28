@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arrays multidimensionales</title>
+    <style>
+        .fila {
+            width: 260px;
+            display: flex;
+            margin: .5rem 0;
+        }
+
+        .fila label {
+            flex-basis: 35%;
+        }
+
+        .error {
+            border-color: red;
+            background-color: rgba(240, 128, 128, 0.37);
+            border-radius: 0.2rem;
+        }
+
+        .flex {
+            display: flex;
+            justify-content: space-around;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="contenedor">
+        <h1>Gestión de Contactos con más de un campo</h1>
+        <h2>Entrada de datos</h2>
+        <div class="fila">
+            <label for="in_name">Nombre:</label><input type="text" id="in_name">
+        </div>
+        <div class="fila">
+            <label for="in_ciudad">Ciudad:</label><input type="text" id="in_ciudad">
+        </div>
+        <div class="fila">
+            <label for="in_mail">Email:</label><input type="email" id="in_mail">
+        </div>
+        <div class="fila">
+            <label for="in_edad">Edad:</label><input type="number" size="3" id="in_edad">
+        </div>
+        <button id="btn_add">Guardar</button>
+        <h2>Salida de datos</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>nombre</th>
+                    <th>Población</th>
+                    <th>Email</th>
+                    <th>Edad</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody class="contact-list"></tbody>
+        </table>
+        <!-- Filtrado de datos -->
+        <h2>Crear arrays nuevos a partir del array principal</h2>
+        <div class="flex">
+            <div class="col-izq">
+                <button id="btn_get_age">Obtener Edades</button>
+                <div id="out_age"></div>
+                <button id="btn_30">Filtra &gt; 30 </button>
+                <div id="out_30"></div>
+            </div>
+            <div class="col-dcha">
+                <label for="sel_data">Selecciona lista a obtener</label>
+                <select name="" id="sel_data">
+                    <option value="0">Nombre</option>
+                    <option value="1">Población</option>
+                    <option value="2">Email</option>
+                    <option value="3">Edad</option>
+                </select>
+                <ul id="data_list"></ul>
+            </div>
+        </div>
+        <h3>Datos filtrados por edad</h3>
+        <div class="fila-filter">
+            <label for="in_min_age">Edad Mínima</label>
+            <input type="number" name="" id="in_min_age" size="4">
+            <label for="in_max_age">Edad Máxima</label>
+            <input type="number" name="" id="in_max_age" size="4">
+            <button id="btn_filter_age">Filtrar</button>
+            <select name="" id="sel_order">
+                    <option value="0">Nombre</option>
+                    <option value="1">Población</option>
+                    <option value="2">Email</option>
+                    <option value="3">Edad</option>
+                </select>
+                <label for="ck_order">Ascendente</label>
+                <input type="checkbox" name="" id="ck_order">
+            <button id="btn_order">Ordenar</button>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>nombre</th>
+                    <th>Población</th>
+                    <th>Email</th>
+                    <th>Edad</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody class="filter-list"></tbody>
+        </table>
+        <!-- Emergente edición datos -->
+        <dialog id="edit_contact">
+            <div class="fila">
+                <label for="ed_name">Nombre:</label><input type="text" id="ed_name">
+            </div>
+            <div class="fila">
+                <label for="ed_ciudad">Ciudad:</label><input type="text" id="ed_ciudad">
+            </div>
+            <div class="fila">
+                <label for="ed_mail">Email:</label><input type="email" id="ed_mail">
+            </div>
+            <div class="fila">
+                <label for="ed_edad">Edad:</label><input type="number" size="3" id="ed_edad">
+            </div>
+            <button id="btn_ed">Actualizar</button>
+            <button id="btn_del">Eliminar</button>
+            <button id="btn_close">Cerrar</button>
+        </dialog>
+    </div>
+    <script>
+        const contactos = [['Alumno Prueba', 'Valencia', 'xxx@dominio.com', 25]];
+        let c1 = ['Alberto', 'Picanya', 'mimail@correo.es', 30];
+        let c2 = ['Ana', 'Alicante', 'sumail@correo.es', 35];
+        let c3 = ['Carmen', 'Castellón', 'tumail@correo.es', 40];
+        contactos.push(c1, c2, c3);
+        //DOM
+        //INPUTS
+        const NAME = document.getElementById('in_name');
+        const TOWN = document.getElementById('in_ciudad');
+        const EMAIL = document.getElementById('in_mail');
+        const AGE = document.getElementById('in_edad');
+        const BTN_ADD = document.getElementById('btn_add');
+        // EDITAR
+        const ED_PANEL = document.getElementById('edit_contact');
+        const ED_NAME = document.getElementById('ed_name');
+        const ED_TOWN = document.getElementById('ed_ciudad');
+        const ED_EMAIL = document.getElementById('ed_mail');
+        const ED_AGE = document.getElementById('ed_edad');
+        const ED_BTN = document.getElementById('btn_ed');
+        const DEL_BTN = document.getElementById('btn_del');
+        const CLOSE_BTN = document.getElementById('btn_close');
+        //ORDENAR Y FILTRAR
+        const AGE_BTN = document.getElementById('btn_get_age');
+        const OUT_AGES = document.getElementById('out_age')
+        const OUT_LIST = document.getElementById('data_list');
+        const SEL_LIST = document.getElementById('sel_data');
+        const BTN_30 = document.getElementById('btn_30');
+        const OUT_30 = document.getElementById('out_30');
+        const MIN_AGE = document.getElementById('in_min_age');
+        const MAX_AGE = document.getElementById('in_max_age');
+        const BTN_FILTER_AGE = document.getElementById('btn_filter_age');
+        const FILTER_LIST = document.querySelector('.filter-list');
+        const BTN_ORDER = document.getElementById('btn_order');
+        const SEL_ORDER = document.getElementById('sel_order');
+        const CK_ORDER = document.getElementById('ck_order');
+
+        function addContact() {
+            let name = validateInput(NAME, 1);
+            let town = validateInput(TOWN, 1);
+            let email = validateInput(EMAIL, 2);
+            let age = validateInput(AGE, 3);
+            if (!name || !town || !email || !age) {
+                return
+            }
+            let new_contact = [name, town, email, age];
+            contactos.push(new_contact);
+            showContacts();
+            NAME.value = TOWN.value = EMAIL.value = AGE.value = '';
+            NAME.focus();
+        }
+        function validateInput(input, validate) {
+            let value = input.value;
+            let result = false;
+            switch (validate) {
+                case 1:
+                    result = validateText(value)
+                    break;
+                case 2:
+                    result = validateEmail(value)
+                    break;
+                case 3:
+                    result = validateNumber(value)
+                    break;
+
+                default:
+                    result = validateText(value)
+                    break;
+            }
+            if (!result) {
+                setInputError(input);
+                return false;
+            }
+            return result;
+        }
+        function validateText(value) {
+            let text = cleanText(value);
+            return text;
+        }
+        function validateEmail(value) {
+            let email = cleanText(value);
+            if (!email || email.indexOf('@') === -1 || email.indexOf('.') === -1) {
+                return false;
+            }
+            return email;
+        }
+        function validateNumber(value) {
+            let age = parseInt(value);
+            if (age < 1 || age > 120) {
+                return false;
+            }
+            return age;
+        }
+        function cleanText(value) {
+            let text = value.trim();
+            while (text.indexOf('  ') != -1) {
+                text.replaceAll('  ', ' ');
+            }
+            if (text.length < 3) {
+                return false;
+            }
+            return text;
+        }
+        function setInputError(input) {
+            input.classList.add('error');
+            input.value = '';
+        }
+        function clearInputError() {
+            this.classList.remove('error')
+        }
+        function showContacts() {
+            //identificar destino en el DOM
+            const listado = document.querySelector('.contact-list');
+            //eliminamos posibles valores
+            listado.innerHTML = '';
+            //contador de filas
+            let row_count = 0;
+            //bucle para recorrer los contactos
+            for (const contact of contactos) {
+                //creo un elemento tr
+                let row = document.createElement('tr');
+                //recorro cada contacto para pasar sus datos a celdas
+                for (const data of contact) {
+                    //creo la celda
+                    let cell = document.createElement('td');
+                    //paso el dato a la celda
+                    cell.textContent = data;
+                    //paso la celda a la fila
+                    row.append(cell);
+                }
+                //añadir botón edit
+                const btn_ed = document.createElement('button')
+                btn_ed.textContent = 'Editar';
+                btn_ed.onclick = editContact;
+                btn_ed.dataset.row = row_count;
+                let cell = document.createElement('td');
+                //celda para el botón
+                cell.append(btn_ed)
+                row.append(cell)
+                //paso la fila al DOM
+                listado.append(row)
+                //incremento el contador
+                row_count++;
+            }
+        }
+        function editContact() {
+            //busco la fila de datos a editar
+            const index = parseInt(this.dataset.row);
+            //accedo a esa fila
+            const data = contactos[index];
+            //muestro valores
+            ED_NAME.value = data[0]
+            ED_TOWN.value = data[1]
+            ED_EMAIL.value = data[2]
+            ED_AGE.value = data[3]
+            //mostrar modal
+            ED_PANEL.showModal();
+            //definir botón editar
+            ED_BTN.onclick = () => updateContact(index);
+            //definir botón eliminar
+            DEL_BTN.onclick = () => deleteContact(index);
+            //botón cerrar
+            CLOSE_BTN.onclick = () => ED_PANEL.close();
+
+        }
+        function updateContact(index) {
+            let name = validateInput(ED_NAME, 1);
+            let town = validateInput(ED_TOWN, 1);
+            let email = validateInput(ED_EMAIL, 2);
+            let age = validateInput(ED_AGE, 3);
+            if (!name || !town || !email || !age) {
+                return
+            }
+            let contact_edited = [name, town, email, age];
+            contactos[index] = contact_edited;
+            showContacts();
+            ED_PANEL.close();
+        }
+        function deleteContact(index) {
+            let del = confirm('Acepta para eliminar este contacto');
+            if (del) {
+                contactos.splice(index, 1)
+                showContacts();
+                ED_PANEL.close();
+            }
+        }
+        function getAges() {
+            let edades = contactos.map((valor) => { return valor[3] })
+            //ordenar números 
+            edades.sort((a, b) => {
+                return b - a;
+            })
+            OUT_AGES.textContent = edades;
+            return edades;
+        }
+        function getList(field) {
+            let lista = contactos.map((valor) => { return valor[field] });
+            return lista;
+        }
+        function createList() {
+            let field = SEL_LIST.value;
+            //obtenemos lista a mostrar
+            let lista = getList(field);
+            //ordenar la lista
+            lista.sort();
+            //vaciamos salida en DOM
+            OUT_LIST.innerHTML = '';
+            //recorremos el listado creando un li para cada elemento
+            lista.forEach((elemento) => {
+                let li = document.createElement('li');
+                li.textContent = elemento;
+                OUT_LIST.append(li);
+            })
+        }
+        //obtener edades > 30
+        function getOver30() {
+            let edades = getAges();
+            let mayores30 = edades.filter(sobre30);
+            OUT_30.textContent = mayores30;
+        }
+        function sobre30(edad) {
+            return edad > 30;
+        }
+        //obtener listado completo filtrado por edad
+        function getFilterList() {
+            const min_age = parseInt(MIN_AGE.value);
+            const max_age = parseInt(MAX_AGE.value);
+            let contacts_filter = contactos.filter((contacto) => {
+                return contacto[3] >= min_age && contacto[3] <= max_age;
+            });
+            return contacts_filter;
+        }
+        function createFilterList() {
+            let filter_list = getFilterList();
+            buildTable(filter_list);
+        }
+        function buildTable(list) {
+            FILTER_LIST.innerHTML = '';
+            list.forEach((contacto) => {
+                let fila = document.createElement('tr');
+                contacto.forEach((campo) => {
+                    let celda = document.createElement('td');
+                    celda.textContent = campo;
+                    fila.append(celda);
+                });
+                FILTER_LIST.append(fila);
+            });
+        }
+        function orderTable() {
+            let list = getFilterList();
+            let order = SEL_ORDER.value;
+            let asc = CK_ORDER.checked ? 1 : -1;
+            list.sort((a, b)=>{
+                if( a[order]=== b[order]) {
+                    return 0
+                }
+                return (a[order] > b[order] ? 1 : -1) * asc
+            })
+            buildTable(list);
+        }
+        //EVENTOS
+        const INPUTS = document.querySelectorAll('input');
+        for (const input of INPUTS) {
+            input.onfocus = clearInputError
+        }
+        BTN_ADD.onclick = addContact
+        AGE_BTN.onclick = getAges
+        SEL_LIST.onchange = createList
+        BTN_30.onclick = getOver30;
+        BTN_FILTER_AGE.onclick = createFilterList
+        BTN_ORDER.onclick = orderTable
+        showContacts()
+    </script>
+</body>
+
+</html>
