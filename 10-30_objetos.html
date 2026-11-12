@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trabajo con Objetos</title>
+</head>
+
+<body>
+    <div class="contenedor">
+        <h1 class="title">Almacenar un objeto o una colección de objetos en Storage</h1>
+        <div class="fila">
+            <label for="in_event_name">Nombre de Evento</label>
+            <input type="text" name="" id="in_event_name">
+        </div>
+        <div class="fila">
+            <label for="in_date">Fecha de Evento</label>
+            <input type="date" id="in_date">
+        </div>
+        <div class="fila">
+            <label for="in_ck_asist">Asistir</label>
+            <input type="checkbox" id="in_ck_asist">
+        </div>
+        <div class="fila">
+            <button type="button" id="btn_event">Guardar</button>
+        </div>
+    </div>
+    <script>
+        let calendario = [];
+        function createEvent() {
+            let indentificador = calendario.length + 1;
+            let cita = {};
+            cita.titulo = document.getElementById('in_event_name').value;
+            cita.fecha = document.getElementById('in_date').value;
+            cita.asistencia = document.getElementById('in_ck_asist').checked;
+            cita.id = 'AFZ-00' + indentificador;
+            calendario.push(cita);
+            console.log(calendario);
+        }
+        document.getElementById('btn_event').onclick = createEvent;
+        // Se crean y asignan cuatro variables de una sola vez,
+        // separadas por comas
+        var myObj = new Object(),
+            str = "myString",
+            rand = Math.random(),
+            obj = new Object();
+
+        myObj.type = "Sintaxis de puntos";
+        myObj["fecha de creación"] = "Cadena con espacios";
+        myObj[str] = "Valor de cadena";
+        myObj[rand] = "Número aleatorio";
+        myObj[obj] = "Object";
+        myObj[""] = "Incluso una cadena vacía";
+
+        console.log(myObj);
+    </script>
+</body>
+
+</html>

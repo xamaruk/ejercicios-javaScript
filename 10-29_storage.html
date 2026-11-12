@@ -267,6 +267,7 @@
         const SALUDO = document.getElementById('saludo');
 
         function checkIsDefinedUserName() {
+            //ACCEDEMOS AL STORAGE BUSCANDO USERNAME
             let user_log = localStorage.getItem('username');
             if (!user_log) {
                 DIAL_USER.showModal()
